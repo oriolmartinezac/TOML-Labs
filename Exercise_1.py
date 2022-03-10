@@ -78,8 +78,8 @@ if __name__ == "__main__":
 
     #ax = plt.axes(projection='3d')
     #ax.grid()
-    yline = np.arange(-10, 2, 0.1)
-    xline = np.arange(-10, 2, 0.1)
+    yline = np.arange(-10, 3, 0.7)
+    xline = np.arange(-10, 3, 0.7)
     xline, yline = np.meshgrid(xline, yline)
     #yline = f((xline, zline))
     Z = np.array(f((xline, yline)))
