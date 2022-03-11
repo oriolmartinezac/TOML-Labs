@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
         print("NORMAL")
         start_time = time.time()
-        res = minimize(fun, element, method='SLSQP', constraints=cons)
+        res = minimize(fun, element, method='SLSQP', constraints=cons, options={'disp': True})
         print("--- %s seconds ---" % (time.time() - start_time))
         print(res)
         print("optimal value p*", res.fun)
