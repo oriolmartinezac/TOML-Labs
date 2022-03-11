@@ -66,7 +66,7 @@ if __name__ == "__main__":
     xline = np.arange(-10, 3, 0.7)
     X, Y = np.meshgrid(xline, yline)
     #yline = f((xline, zline))
-    Z = np.array(f((xline, yline)))
+    Z = np.array(f((X, Y)))
     #yline = [obj_f(val) for val in xline]
     #yline = [obj_f(val) for val in zip(xline, zline)]
     fig = plt.figure(figsize=(10, 10))
