@@ -1,12 +1,9 @@
 from scipy.optimize import minimize
 import math
-from scipy import special
 import numpy as np
 import time
-from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d
-
+import numdifftools as nd
 
 def objective_function():
     return lambda x: (math.e**x[0]) * (4 * ((x[0])**2) + 2 * ((x[1])**2) + 4 * x[0] * x[1] + 1)
@@ -14,15 +11,6 @@ def objective_function():
 def constraints_function():
     return ({'type': 'ineq', 'fun': lambda x: -x[0] * x[1] + x[0] + x[1] - 1.5},
             {'type': 'ineq', 'fun': lambda x: x[0] * x[1] + 10})
-
-def f(x):
-    return (math.e**x[0]) * (4 * ((x[0])**2) + 2 * ((x[1])**2) + 4 * x[0] * x[1] + 1)
-
-#MATRIX WITH THE DERIVATIVEs
-def fun_Jac(x):
-    dx = x[0].diff()
-    dy = None
-    return np.array((dx, dy))
 
 
 if __name__ == "__main__":
@@ -45,17 +33,18 @@ if __name__ == "__main__":
         results.append(res.fun)
         x_results.append(res.x)
         print("\n")
-        '''
+
         print("JACOBIAN")
+        g = nd.Gradient(fun)
         start_time = time.time()
-        res2 = minimize(fun, element, method='SLSQP', jac=True, constraints=cons)
+        res2 = minimize(fun, element, method='SLSQP', jac=g, constraints=cons, options={'disp': True})
         print("--- %s seconds ---" % (time.time() - start_time))
         print(res2)
         print("optimal value p*", res2.fun)
         print("optimal var: x1 = ", res2.x[0], " x2 = ", res2.x[1])
 
         print("\n")
-        '''
+
 
         #plt.scatter(res.x[0], res.fun, color='orange', marker='x', label='opt1')
         #plt.scatter(res.x[1], res.fun, color='green', marker='x', label='opt2')
@@ -78,6 +67,7 @@ if __name__ == "__main__":
     #Plot the mins of the different inital guesses
     for i in range(len(results)):
         ax.scatter(x_results[i][0], x_results[i][1], results[i], color="red")
+
     # Plot a 3D surface
     ax.plot_surface(X, Y, Z)
 
