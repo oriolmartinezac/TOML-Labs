@@ -57,30 +57,14 @@ if __name__ == "__main__":
         print("\n")
         '''
 
-        #x_dummy1 = np.linspace(res.x*-1, res.x, 1000)
-        #y_dummy1 = [fun(val) for val in x_dummy1]
-        #print(y_dummy1)
-        #plt.plot(x_dummy1, y_dummy1, color='blue', label='fun')
-
         #plt.scatter(res.x[0], res.fun, color='orange', marker='x', label='opt1')
         #plt.scatter(res.x[1], res.fun, color='green', marker='x', label='opt2')
 
 
-        #PLOT IN 3D
-        #x_dummy = np.linspace(start=-1000, stop=100, num=10000)
-        #y_dummy = n
-        #plt.plot(x_dummy, x_dummy**2)
-        #plt.plot(res.x[0], f(res.x), 'ro')
-        #plt.grid()
-        #plt.legend(loc=1)
-        #plt.show()
-
-
-    #ax = plt.axes(projection='3d')
-    #ax.grid()
+    #PLOT IN 3D
     yline = np.arange(-10, 3, 0.7)
     xline = np.arange(-10, 3, 0.7)
-    xline, yline = np.meshgrid(xline, yline)
+    X, Y = np.meshgrid(xline, yline)
     #yline = f((xline, zline))
     Z = np.array(f((xline, yline)))
     #yline = [obj_f(val) for val in xline]
@@ -90,14 +74,12 @@ if __name__ == "__main__":
     ax.set_xlabel('x', labelpad=20)
     ax.set_ylabel('y', labelpad=20)
     ax.set_zlabel('z', labelpad=20)
+
+    #Plot the mins of the different inital guesses
     for i in range(len(results)):
         ax.scatter(x_results[i][0], x_results[i][1], results[i], color="red")
     # Plot a 3D surface
-    ax.plot_surface(xline, yline, Z)
-
-    #ax.plot_wireframe(x_fun, y_fun, yline, rstride=5, cstride=5)
-
-    # rotate the axes and update
+    ax.plot_surface(X, Y, Z)
 
     plt.show()
 
