@@ -12,6 +12,8 @@ def constraints_function():
     return ({'type': 'ineq', 'fun': lambda x: -x[0] * x[1] + x[0] + x[1] - 1.5},
             {'type': 'ineq', 'fun': lambda x: x[0] * x[1] + 10})
 
+def f(x):
+    return (math.e**x[0]) * (4 * ((x[0])**2) + 2 * ((x[1])**2) + 4 * x[0] * x[1] + 1)
 
 if __name__ == "__main__":
 
