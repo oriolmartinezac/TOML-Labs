@@ -24,7 +24,7 @@ if __name__ == "__main__":
     results = []
     x_results = []
     obj_f = objective_function()
-    x0 = [(0, 0), (-10, 1)]
+    x0 = [(0, 0)]
     for element in x0:
         fun = objective_function()
         cons = constraints_function()
