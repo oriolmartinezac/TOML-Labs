@@ -24,7 +24,7 @@ if __name__ == "__main__":
     results = []
     x_results = []
     obj_f = objective_function()
-    x0 = [(0, 0), (1, 1)] #First one not feassible and second one feassible
+    x0 = [(0, 0), (2, 2)] #First one not feassible and second one feassible
 
     for element in x0:
         fun = objective_function()
@@ -39,6 +39,16 @@ if __name__ == "__main__":
         print("optimal var: x1 = ", res.x[0], " x2 = ", res.x[1])
         results.append(res.fun)
         x_results.append(res.x)
+        print("\n")
+
+        print("JACOBIAN")
+        g = nd.Gradient(fun)
+        start_time = time.time()
+        res2 = minimize(fun, element, method='SLSQP', jac=g, constraints=cons, options={'disp': True})
+        print("--- %s seconds ---" % (time.time() - start_time))
+        print(res2)
+        print("optimal value p*", res2.fun)
+        print("optimal var: x1 = ", res2.x[0], " x2 = ", res2.x[1])
         print("\n")
 
     # PLOT IN 3D
