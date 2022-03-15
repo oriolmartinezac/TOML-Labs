@@ -24,7 +24,8 @@ if __name__ == "__main__":
     results = []
     x_results = []
     obj_f = objective_function()
-    x0 = [(0, 0)]
+    x0 = [(0, 0), (1, 1)] #First one not feassible and second one feassible
+
     for element in x0:
         fun = objective_function()
         cons = constraints_function()
@@ -40,25 +41,25 @@ if __name__ == "__main__":
         x_results.append(res.x)
         print("\n")
 
-        # PLOT IN 3D
-        yline = np.arange(-10, 3, 0.7)
-        xline = np.arange(-10, 3, 0.7)
-        X, Y = np.meshgrid(xline, yline)
-        # yline = f((xline, zline))
-        Z = np.array(f((X, Y)))
-        # yline = [obj_f(val) for val in xline]
-        # yline = [obj_f(val) for val in zip(xline, zline)]
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(111, projection='3d')
-        ax.set_xlabel('x', labelpad=20)
-        ax.set_ylabel('y', labelpad=20)
-        ax.set_zlabel('z', labelpad=20)
+    # PLOT IN 3D
+    yline = np.arange(-10, 3, 0.7)
+    xline = np.arange(-10, 3, 0.7)
+    X, Y = np.meshgrid(xline, yline)
+    # yline = f((xline, zline))
+    Z = np.array(f((X, Y)))
+    # yline = [obj_f(val) for val in xline]
+    # yline = [obj_f(val) for val in zip(xline, zline)]
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlabel('x', labelpad=20)
+    ax.set_ylabel('y', labelpad=20)
+    ax.set_zlabel('z', labelpad=20)
 
-        # Plot the mins of the different inital guesses
-        for i in range(len(results)):
-            ax.scatter(x_results[i][0], x_results[i][1], results[i], color="red")
+    # Plot the mins of the different inital guesses
+    ax.scatter(x_results[0][0], x_results[0][1], results[0], color="red") #Not feassible
+    ax.scatter(x_results[1][0], x_results[1][1], results[1], color="green") #Feassible
 
-        # Plot a 3D surface
-        ax.plot_surface(X, Y, Z, cmap="cool")
+    # Plot a 3D surface
+    ax.plot_surface(X, Y, Z, cmap="cool")
 
-        plt.show()
+    plt.show()
