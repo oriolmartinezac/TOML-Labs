@@ -3,6 +3,7 @@ import math
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import numdifftools as nd
 
 def objective_function():
@@ -51,7 +52,6 @@ if __name__ == "__main__":
         #plt.scatter(res.x[0], res.fun, color='orange', marker='x', label='opt1')
         #plt.scatter(res.x[1], res.fun, color='green', marker='x', label='opt2')
 
-
     #PLOT IN 3D
     yline = np.arange(-10, 3, 0.7)
     xline = np.arange(-10, 3, 0.7)
@@ -71,7 +71,7 @@ if __name__ == "__main__":
         ax.scatter(x_results[i][0], x_results[i][1], results[i], color="red")
 
     # Plot a 3D surface
-    ax.plot_surface(X, Y, Z)
+    ax.plot_surface(X, Y, Z, cmap="cool")
 
     plt.show()
 

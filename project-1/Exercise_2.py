@@ -59,6 +59,6 @@ if __name__ == "__main__":
             ax.scatter(x_results[i][0], x_results[i][1], results[i], color="red")
 
         # Plot a 3D surface
-        ax.plot_surface(X, Y, Z)
+        ax.plot_surface(X, Y, Z, cmap="cool")
 
         plt.show()
