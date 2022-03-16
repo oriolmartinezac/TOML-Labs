@@ -8,7 +8,7 @@ x = Variable(1, name='x')
 
 
 # Form and solve problem.
-prob = Problem(Minimize((square(x[0])+1)), [square(x[0])-4*x[0]+16 <= 0])
+prob = Problem(Minimize((square(x[0])+1)), [square(x[0])-6*x[0]+8 <= 0])
 print("solve", prob.solve())  # Returns the optimal value.
 print ("prob1 is DCP:", prob.is_dcp())
 print("status:", prob.status)
