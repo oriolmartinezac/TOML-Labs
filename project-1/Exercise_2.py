@@ -24,7 +24,7 @@ if __name__ == "__main__":
     results = []
     x_results = []
     obj_f = objective_function()
-    x0 = [(0, 0), (2, 2)] #First one not feassible and second one feassible
+    x0 = [(10, -10), (10, 10)] #First one not feassible and second one feassible
 
     for element in x0:
         fun = objective_function()
@@ -52,8 +52,8 @@ if __name__ == "__main__":
         print("\n")
 
     # PLOT IN 3D
-    yline = np.arange(-10, 3, 0.7)
-    xline = np.arange(-10, 3, 0.7)
+    yline = np.arange(-1300, 1300, 100)
+    xline = np.arange(-1300, 1300, 100)
     X, Y = np.meshgrid(xline, yline)
     # yline = f((xline, zline))
     Z = np.array(f((X, Y)))
@@ -70,6 +70,6 @@ if __name__ == "__main__":
     ax.scatter(x_results[1][0], x_results[1][1], results[1], color="green") #Feassible
 
     # Plot a 3D surface
-    ax.plot_surface(X, Y, Z, cmap="cool")
+    ax.plot_surface(X, Y, Z, cmap="jet")
 
     plt.show()
