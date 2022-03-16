@@ -3,7 +3,6 @@ import math
 import numpy as np
 import time
 import matplotlib.pyplot as plt
-from matplotlib import cm
 import numdifftools as nd
 
 def objective_function():
@@ -22,6 +21,7 @@ if __name__ == "__main__":
     results = []
     x_results = []
     obj_f = objective_function()
+
     for element in x0:
         fun = objective_function()
         cons = constraints_function()
@@ -48,18 +48,12 @@ if __name__ == "__main__":
 
         print("\n")
 
-
-        #plt.scatter(res.x[0], res.fun, color='orange', marker='x', label='opt1')
-        #plt.scatter(res.x[1], res.fun, color='green', marker='x', label='opt2')
-
     #PLOT IN 3D
     yline = np.arange(-10, 3, 0.7)
     xline = np.arange(-10, 3, 0.7)
     X, Y = np.meshgrid(xline, yline)
-    #yline = f((xline, zline))
     Z = np.array(f((X, Y)))
-    #yline = [obj_f(val) for val in xline]
-    #yline = [obj_f(val) for val in zip(xline, zline)]
+
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, projection='3d')
     ax.set_xlabel('x', labelpad=20)
@@ -74,6 +68,8 @@ if __name__ == "__main__":
     ax.plot_surface(X, Y, Z, cmap="cool")
 
     plt.show()
+
+
 
 
 
