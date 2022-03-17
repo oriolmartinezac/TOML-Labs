@@ -2,6 +2,9 @@ import numdifftools as nd
 import numpy as np
 import matplotlib.pyplot as plt
 
+from autograd import grad
+from autograd import hessian
+
 def obj_fun1():
     return lambda x: 2*(x[0]**2) - 0.5
 
@@ -9,10 +12,10 @@ def plot_fun1(x):
     return 2 * (x ** 2) - 0.5
 
 def obj_fun2():
-    return lambda x: 2*(x[0]**4) - 4 * (x[0]**2) + x[0] - 0.5
+    return lambda x: 2*(x**4) - 4 * (x**2) + x - 0.5
 
 def plot_fun2(x):
-    return 2*(x[0]**4) - 4 * (x[0]**2) + x[0] - 0.5
+    return 2*(x**4) - 4 * (x**2) + x - 0.5
 
 def gradient_cal(obj_fun, stop_criteria, max_iterations, initial_guess, method, l_rate=0.000001):
     if method == "backtracking":
@@ -30,6 +33,43 @@ def gradient_cal(obj_fun, stop_criteria, max_iterations, initial_guess, method, 
         print("The local minimum occurs at", cur_x)
         return cur_x
 
+def newtons_method(obj_fun, stop_criteria, max_iterations, inital_guess, **kwargs):
+    grad_fun = nd.Gradient(obj_fun)
+    hess = nd.Hessian(obj_fun)
+    w = inital_guess
+
+    if stop_criteria in kwargs:
+        beta = kwargs['stop_criteria']
+
+    weight_history = [w]
+    print(obj_fun(w))
+    cost_history = [obj_fun(w)]
+    for k in range(max_iterations):
+        grad_eval = grad_fun(w)
+        hess_eval = hess(w)
+
+        hess_eval.shape = (int((np.size(hess_eval))**(0.5)), int((np.size(hess_eval))**(0.5)))
+
+        A = hess_eval + stop_criteria*np.eye(w.size)
+        b = grad_eval
+        w = np.linalg.solve(A, np.dot(A, w) - b)
+
+        weight_history.append(w)
+        cost_history.append(obj_fun(w))
+
+    return weight_history, cost_history
+
+#obj_fun, stop_criteria, max_iterations, inital_guess
+def newton(obj_fun, stop_criteria, max_iterations, initial_guess):
+    J_grad = nd.Gradient(obj_fun)
+    J_hess = nd.Hessian(obj_fun)
+    epsilon = stop_criteria
+    x = initial_guess
+    for i in range(max_iterations):
+        x = x - np.linalg.solve(J_hess(x), J_grad(x))
+        if np.linalg.norm(J_grad(x)) < epsilon:
+            return x, i + 1
+    return x, max_iterations
 
 if __name__ == "__main__":
     stop_criteria = 0.0001
@@ -55,14 +95,20 @@ if __name__ == "__main__":
 
     for element in x0:
         print("ITERATION")
-        x = gradient_cal(obj_fun1, stop_criteria, max_iterations, element, "backtracking", learning_rate)
+        x = gradient_cal(obj_fun2, stop_criteria, max_iterations, element, "backtracking", learning_rate)
         print("\n")
 
         # PLOT in 2D
         x_dummy1 = np.linspace(-10, 10, 1000)
 
-        y_dummy1 = [plot_fun1(val) for val in x_dummy1]
+        y_dummy1 = [plot_fun2(val) for val in x_dummy1]
         plt.plot(x_dummy1, y_dummy1, color='blue', label='fun')
         plt.scatter(x, plot_fun1(x), color='red', marker='x', label='opt')
 
         plt.show()
+
+    for element in x0:
+        print("ITERATION")
+        w, c = newtons_method(obj_fun2, stop_criteria, max_iterations, element)
+        print("Weight and Cost: ", w, c)
+        print("\n")
