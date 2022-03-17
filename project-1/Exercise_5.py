@@ -9,8 +9,6 @@ def plot_fun(x):
 # Create two scalar optimization variables.
 x = Variable(2, name='x')
 
-
-
 obj_fun = square(x[0])+square(x[1])
 cons1 = square(x[0]-1)+square(x[1]-1)
 cons2 = square(x[0]-1)+square(x[1]+1)
