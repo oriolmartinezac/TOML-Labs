@@ -99,7 +99,7 @@ if __name__ == "__main__":
 
     for element in x0:
         print("ITERATION")
-        x = new_newton(obj_fun2, stop_criteria, max_iterations, element, learning_rate)
+        x = newton(obj_fun2, stop_criteria, max_iterations, element, learning_rate)
         print("X: ", x)
         print("\n")
 
