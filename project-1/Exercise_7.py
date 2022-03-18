@@ -5,7 +5,7 @@ x = Variable(3, name='x')
 
 c = [1, 2, 1, 2, 1]
 
-obj_fun = cvxpy.log(x[0]) + cvxpy.log(x[1]) + cvxpy.log(x[2])
+obj_fun = log(x[0]) + log(x[1]) + log(x[2])
 cons1 = x[0] + x[2]
 cons2 = x[0] + x[1]
 cons3 = x[2]
