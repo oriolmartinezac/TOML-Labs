@@ -21,7 +21,6 @@ print("optimal value p* = ", prob.value)
 print("optimal var: x1 = ", x[0].value)
 print("optimal dual variables lambda1 = ", constraints[0].dual_value)
 
-
 x_dummy1 = np.linspace(-10, 10, 1000)
 
 y_dummy1 = [plot_fun(val) for val in x_dummy1]

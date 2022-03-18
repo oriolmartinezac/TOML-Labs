@@ -22,4 +22,4 @@ print("optimal var: R1 = ", R[0].value, " var R2: ", R[1].value, " var R3: ", R[
 print("optimal dual variables lambda1 = ", constraints[0].dual_value)
 print("optimal dual variables lambda2 = ", constraints[1].dual_value)
 print("optimal dual variables lambda3 = ", constraints[2].dual_value)
-print("optimal dual variables lambda4 = ", constraints[3].dual_value)
+print("optimal dual variables μ = ", constraints[3].dual_value)
