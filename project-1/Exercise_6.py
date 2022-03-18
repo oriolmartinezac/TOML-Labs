@@ -59,15 +59,41 @@ def newtons_method(obj_fun, stop_criteria, max_iterations, inital_guess, **kwarg
 
     return weight_history, cost_history
 
+def new_newton(obj_fun, stop_criteria, max_iterations, initial_guess, l_rate):
+    grad = nd.Gradient(obj_fun)
+    hess = nd.Hessian(obj_fun)
+    print("GRAD: ", grad)
+    print("HESS: ", hess)
+    #np.linalg.solve(hess(x), grad(x))
+    #ILL-CONDITIONED
+    #np.linalg.cond(H)
+
+    cur_x = initial_guess
+    diff = 1.0
+    i = 0
+    while i < max_iterations and diff > stop_criteria:
+        prev_x = cur_x
+        #np.linalg.inv(A)
+
+        cur_x = cur_x - l_rate * np.linalg.cond(hess(prev_x)) * grad(prev_x)
+        diff = abs(cur_x - prev_x)
+        i = i+1
+        print("Iteration", i, "\nX value is", cur_x)
+
+    print("The local minimum occurs at", cur_x)
+    return cur_x
+
+
+
 #obj_fun, stop_criteria, max_iterations, inital_guess
 def newton(obj_fun, stop_criteria, max_iterations, initial_guess):
-    J_grad = nd.Gradient(obj_fun)
-    J_hess = nd.Hessian(obj_fun)
+    grad = nd.Gradient(obj_fun)
+    hess = nd.Hessian(obj_fun)
     epsilon = stop_criteria
     x = initial_guess
     for i in range(max_iterations):
-        x = x - np.linalg.solve(J_hess(x), J_grad(x))
-        if np.linalg.norm(J_grad(x)) < epsilon:
+        x = x - np.linalg.solve(hess(x), grad(x))
+        if np.linalg.norm(grad(x)) < epsilon:
             return x, i + 1
     return x, max_iterations
 
@@ -103,12 +129,21 @@ if __name__ == "__main__":
 
         y_dummy1 = [plot_fun2(val) for val in x_dummy1]
         plt.plot(x_dummy1, y_dummy1, color='blue', label='fun')
-        plt.scatter(x, plot_fun1(x), color='red', marker='x', label='opt')
+        plt.scatter(x, plot_fun2(x), color='red', marker='x', label='opt')
 
         plt.show()
 
     for element in x0:
         print("ITERATION")
-        w, c = newtons_method(obj_fun2, stop_criteria, max_iterations, element)
-        print("Weight and Cost: ", w, c)
+        x = new_newton(obj_fun2, stop_criteria, max_iterations, element, learning_rate)
+        print("X: ", x)
         print("\n")
+
+        # PLOT in 2D
+        x_dummy1 = np.linspace(-10, 10, 1000)
+
+        y_dummy1 = [plot_fun2(val) for val in x_dummy1]
+        plt.plot(x_dummy1, y_dummy1, color='blue', label='fun')
+        plt.scatter(x, plot_fun2(x), color='red', marker='x', label='opt')
+
+        plt.show()
