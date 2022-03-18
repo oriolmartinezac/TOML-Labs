@@ -20,6 +20,8 @@ print ("prob1 is DCP:", prob.is_dcp())
 print("status:", prob.status)
 print("optimal value p* = ", prob.value)
 print("optimal var: x1 = ", x[0].value)
+print("optimal dual variables lambda1 = ", constraints[0].dual_value)
+
 
 x_dummy1 = np.linspace(-10, 10, 1000)
 
