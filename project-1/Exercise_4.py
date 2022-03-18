@@ -5,7 +5,7 @@ import numpy as np
 def plot_fun(x):
     return (x**2)+1
 
-# Create two scalar optimization variables.
+# Create one scalar optimization variables.
 x = Variable(1, name='x')
 
 obj_fun = square(x[0])+1

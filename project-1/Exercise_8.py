@@ -1,14 +1,10 @@
 from cvxpy import *
-import math
 
-def plot_fun(x):
-    return math.log(x[0]) + math.log(x[1]) + math.log(x[2])
-
-# Create two scalar optimization variables.
+# Create three scalar optimization variables.
 x = Variable(3, name='x')
 R = Variable(3, name="R")
 
-obj_fun = cvxpy.sum(cvxpy.log(x))
+obj_fun = sum(log(x))
 cons1 = x[0] + x[1]
 cons2 = x[0]
 cons3 = x[2]
