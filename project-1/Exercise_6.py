@@ -55,7 +55,7 @@ if __name__ == "__main__":
     max_iterations = 10000
     learning_rate = 0.01
 
-    x0 = 0
+    x0 = 3
     obj_fun1 = obj_fun1()
 
     x = gradient_cal(obj_fun1, stop_criteria, max_iterations, x0, "backtracking", learning_rate) #1. objective function, 2.stop criteria, 3. max iterations, 4. Inital_guess 5. Method (Backtracking's method, Newton's method)
