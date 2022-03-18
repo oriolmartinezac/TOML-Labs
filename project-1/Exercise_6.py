@@ -2,9 +2,6 @@ import numdifftools as nd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from autograd import grad
-from autograd import hessian
-
 def obj_fun1():
     return lambda x: 2*(x[0]**2) - 0.5
 

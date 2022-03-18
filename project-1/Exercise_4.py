@@ -1,4 +1,3 @@
-from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 from cvxpy import *
 import numpy as np
