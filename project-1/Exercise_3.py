@@ -36,7 +36,7 @@ def fun_Hess(x):
 fun = lambda x: x[0] ** 2 + x[1] ** 2
 # fun = lambda x: -x[0]**2 - x[1]**2
 
-def plt_fun():
+def plt_fun(x):
     return x[0] ** 2 + x[1] ** 2
 
 
@@ -100,10 +100,9 @@ print("optimal var: x1 = ", x[0].value, " x2 = ", x[1].value)
 print("optimal dual variables lanbda1 = ", constraints[0].dual_value)
 print("optimal dual variables lanbda2 = ", constraints[1].dual_value)
 
-"""
 # PLOT IN 3D
-yline = np.arange(-10, 3, 0.7)
-xline = np.arange(-10, 3, 0.7)
+yline = np.arange(-10, 10, 0.7)
+xline = np.arange(-10, 10, 0.7)
 X, Y = np.meshgrid(xline, yline)
 # yline = f((xline, zline))
 Z = np.array(plt_fun((X, Y)))
@@ -118,8 +117,6 @@ ax.set_zlabel('z', labelpad=20)
 # Plot a 3D surface
 ax.plot_surface(X, Y, Z, cmap="cool")
 
+ax.scatter(res.x[0], res.x[1], res.fun, color="red")
+
 plt.show()
-
-
-
-"""
