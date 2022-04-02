@@ -72,3 +72,7 @@ if __name__ == "__main__":
     ax.plot_surface(X, Y, Z, cmap="jet")
 
     plt.show()
+
+    hessian = nd.Hessian(obj_f)
+
+    print(hessian([1000,10000]))

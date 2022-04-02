@@ -67,8 +67,11 @@ if __name__ == "__main__":
     # Plot a 3D surface
     ax.plot_surface(X, Y, Z, cmap="cool")
 
+
     plt.show()
 
+    hessian = nd.Hessian(obj_f)
+    print(hessian)
 
 
 
