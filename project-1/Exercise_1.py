@@ -6,14 +6,20 @@ import matplotlib.pyplot as plt
 import numdifftools as nd
 
 def objective_function():
-    return lambda x: (math.e**x[0]) * (4 * ((x[0])**2) + 2 * ((x[1])**2) + 4 * x[0] * x[1] + 1)
+    return lambda x: (math.e**x[0]) * (4 * ((x[0])**2) + 2 * ((x[1])**2) + 4 * x[0] * x[1] + 2*x[1] + 1)
 
 def constraints_function():
     return ({'type': 'ineq', 'fun': lambda x: -x[0] * x[1] + x[0] + x[1] - 1.5},
             {'type': 'ineq', 'fun': lambda x: x[0] * x[1] + 10})
 
 def f(x):
-    return (math.e**x[0]) * (4 * ((x[0])**2) + 2 * ((x[1])**2) + 4 * x[0] * x[1] + 1)
+    return (math.e**x[0]) * (4 * ((x[0])**2) + 2 * ((x[1])**2) + 4 * x[0] * x[1] + 2*x[1] + 1)
+
+#calculate the jacobian
+def fun_jac(x):
+    dx = (math.e**x[0])*(4*x[0]**2 + 4*x[0]*(x[1] + 2) + 2*x[1]**2 + 6*x[1] + 1)
+    dy = (math.e**x[0])*(4*x[0] + 4*x[1] + 2)
+    return np.array([dx, dy])
 
 if __name__ == "__main__":
 
@@ -40,7 +46,7 @@ if __name__ == "__main__":
         print("JACOBIAN")
         g = nd.Gradient(fun)
         start_time = time.time()
-        res2 = minimize(fun, element, method='SLSQP', jac=g, constraints=cons, options={'disp': True})
+        res2 = minimize(fun, element, method='SLSQP', jac=fun_jac, constraints=cons, options={'disp': True})
         print("--- %s seconds ---" % (time.time() - start_time))
         print(res2)
         print("optimal value p*", res2.fun)
