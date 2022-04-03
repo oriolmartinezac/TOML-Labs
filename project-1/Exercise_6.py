@@ -81,7 +81,7 @@ if __name__ == "__main__":
     print("\n")
 
     # PLOT in 2D
-    x_dummy1 = np.linspace(-10, 10, 1000)
+    x_dummy1 = np.linspace(-4, 4, 100)
 
     y_dummy1 = [plot_fun(val) for val in x_dummy1]
     plt.plot(x_dummy1, y_dummy1, color='blue', label='fun')
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     print("\n")
 
     # PLOT in 2D
-    x_dummy1 = np.linspace(-10, 10, 1000)
+    x_dummy1 = np.linspace(-4, 4, 100)
 
     y_dummy1 = [plot_fun(val) for val in x_dummy1]
     plt.plot(x_dummy1, y_dummy1, color='blue', label='fun')
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         print("\n")
 
         # PLOT in 2D
-        x_dummy1 = np.linspace(-10, 10, 1000)
+        x_dummy1 = np.linspace(-2, 2, 100)
 
         y_dummy1 = [plot_fun(val, 2) for val in x_dummy1]
         plt.plot(x_dummy1, y_dummy1, color='blue', label='fun')
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         print("\n")
 
         # PLOT in 2D
-        x_dummy1 = np.linspace(-10, 10, 1000)
+        x_dummy1 = np.linspace(-2, 2, 100)
 
         y_dummy1 = [plot_fun(val, 2) for val in x_dummy1]
         plt.plot(x_dummy1, y_dummy1, color='blue', label='fun')
