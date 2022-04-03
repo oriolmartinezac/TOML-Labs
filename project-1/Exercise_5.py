@@ -19,7 +19,9 @@ print("solve", prob.solve())  # Returns the optimal value.
 print ("prob1 is DCP:", prob.is_dcp())
 print("status:", prob.status)
 print("optimal value p* = ", prob.value)
-print("optimal var: x1 = ", x[0].value, x[1].value)
+print("optimal var: x1 = ", x[0].value,"x2 = ", x[1].value)
+print("optimal dual variables lambda1 = ", constraints[0].dual_value)
+print("optimal dual variables lambda2 = ", constraints[1].dual_value)
 
 #PLOT IN 3D
 yline = np.arange(-10, 10, 0.7)
