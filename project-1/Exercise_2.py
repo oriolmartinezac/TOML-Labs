@@ -19,6 +19,12 @@ def constraints_function():
             {'type': 'ineq', 'fun': lambda x: x[0]**2 - x[1]},
             {'type': 'ineq', 'fun': lambda x: x[1]**2 - x[0]})
 
+#calculate the jacobian
+def fun_jac(x):
+    dx = 2*x[0]
+    dy = 2*x[1]
+    return np.array([dx, dy])
+
 if __name__ == "__main__":
     results = []
     x_results = []
@@ -43,7 +49,7 @@ if __name__ == "__main__":
         print("JACOBIAN")
         g = nd.Gradient(fun)
         start_time = time.time()
-        res2 = minimize(fun, element, method='SLSQP', jac=g, constraints=cons, options={'disp': True})
+        res2 = minimize(fun, element, method='SLSQP', jac=fun_jac, constraints=cons, options={'disp': True})
         print("--- %s seconds ---" % (time.time() - start_time))
         print(res2)
         print("optimal value p*", res2.fun)
