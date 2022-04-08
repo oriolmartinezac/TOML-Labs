@@ -1,6 +1,6 @@
 from header import *  ##IMPORTING HEADER FILE
 import matplotlib.pyplot as plt
-from cvxpy import *
+#from cvxpy
 
 def N_d(d):
     n_d = (2*d - 1)*C
@@ -24,7 +24,7 @@ def F_out(d):
     return f_out
 
 def F_B(d):
-    return C - I_d(d) * F_out(d)
+    return (C - abs(I_d(d))) * F_out(d)
 
 def F_I(d):
     f_i = Fs*((D**2 - d**2) / (2*d - 1))
@@ -33,10 +33,10 @@ def F_I(d):
     return f_i
 
 def alphas(d):
-    alpha1 = Tcs + Tal + 3 / 2 * Tps * ((Tps + Tal) / 2 + Tack + Tdata) * F_B(d)
+    alpha1 = Tcs + Tal + 3/2 * Tps * ((Tps + Tal)/2 + Tack + Tdata) * F_B(d)
     alpha2 = F_out(d)/2
-    alpha3 = ((Tps + Tal) / 2 + Tcs + Tal + Tack + Tdata) * F_out(d) + (
-                3 / 2 * Tps + Tack + Tdata) * F_I(d) + 3 / 4 * Tps * F_B(d)
+    alpha3 = ((Tps + Tal)/2 + Tcs + Tal + Tack + Tdata) * F_out(d) + (
+                3/2 * Tps + Tack + Tdata) * F_I(d) + 3/4 * Tps * F_B(d)
 
     return alpha1, alpha2, alpha3
 
@@ -55,11 +55,10 @@ def delay_fun(tw):
 if __name__ == "__main__":
 
     time = [1, 5, 10, 15, 20, 25]
-
     for t in time:
-
         Fs = 1.0/(t * 60 * 1000)
         alpha1, alpha2, alpha3 = alphas(1)
+        print(alphas(1))
         beta1, beta2 = betas(D)
         #x = Variable(3, name='x')
 
