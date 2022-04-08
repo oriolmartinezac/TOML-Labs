@@ -1,2 +1,3 @@
-import IoT-GT-header ##IMPORTING HEADER FILE
+from header import * ##IMPORTING HEADER FILE
 
+print(Lmax)
