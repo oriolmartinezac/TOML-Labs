@@ -40,34 +40,54 @@ def alphas(d):
 
     return alpha1, alpha2, alpha3
 
+def betas(d):
+    beta1 = sum([1/2]*d)
+    beta2 = sum([Tcw / 2 + Tdata]*d)
+
+    return beta1, beta2
+
 def energy_fun(tw):  ##ENERGY FUNCTION
     return alpha1/tw + alpha2*tw + alpha3
 
 def delay_fun(tw):
-    return
+    return beta1*tw + beta2
 
 if __name__ == "__main__":
 
-    d = 1
-    alpha1, alpha2, alpha3 = alphas(d)
+    time = [1, 5, 10, 15, 20, 25]
 
-    beta1 = sum(1 / 2)
-    beta2 = sum(Tcw / 2 + Tdata)
+    for t in time:
 
+        Fs = 1.0/(t * 60 * 1000)
+        alpha1, alpha2, alpha3 = alphas(1)
+        beta1, beta2 = betas(D)
+        #x = Variable(3, name='x')
 
+        # Problem 1
+        # obj_fun = alpha1/Tw + alpha2 * Tw + alpha3#E(Tw) -> energy
+        # cons1 = beta1 * Tw + beta2
+        # cons2 =
+        # cons3 =
+        # cons4 =
+        # constraints = [cons1 <= Lmax, cons2 >= Tw_min, cons3 <= Tw_max, cons4 <= (1/4) ]
 
+        x = np.linspace(Tw_min, Tw_max)
 
-    #x = Variable(3, name='x')
+        plt.plot(x, energy_fun(x), color='blue', label='fun')
+        plt.xlabel('Tw')
+        plt.ylabel('Energy consumed')
+        plt.title('Energy function of Tw with Fs = ' + str(t) + " pkt/min")
+        plt.show()
 
-    # Problem 1
-    # obj_fun = alpha1/Tw + alpha2 * Tw + alpha3#E(Tw) -> energy
-    # cons1 = beta1 * Tw + beta2
-    # cons2 =
-    # cons3 =
-    # cons4 =
-    # constraints = [cons1 <= Lmax, cons2 >= Tw_min, cons3 <= Tw_max, cons4 <= (1/4) ]
+        plt.plot(x, delay_fun(x), color='blue', label='fun')
+        plt.xlabel('Tw')
+        plt.ylabel('Delay time')
+        plt.title('Delay function of Tw with Fs = ' + str(t) + " pkt/min")
+        plt.show()
 
-    x_dummy1 = np.linspace(Tw_min, Tw_max)
+        plt.plot(energy_fun(x), delay_fun(x), color='blue', label='fun')
+        plt.xlabel('Energy')
+        plt.ylabel('Delay')
+        plt.title('Energy-Delay function with Fs = ' + str(t) + " pkt/min")
+        plt.show()
 
-    plt.plot(x_dummy1, energy_fun(x_dummy1), color='blue', label='fun')
-    plt.show()
