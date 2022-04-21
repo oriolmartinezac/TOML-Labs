@@ -55,11 +55,12 @@ def delay_fun(tw):
 if __name__ == "__main__":
 
     time = [1, 5, 10, 15, 20, 25]
+    alpha1, alpha2, alpha3 = 0.0, 0.0, 0.0
+    beta1, beta2 = 0.0, 0.0
+    x = np.linspace(Tw_min, Tw_max)
     for t in time:
         Fs = 1.0/(t * 60 * 1000)
         alpha1, alpha2, alpha3 = alphas(1)
-        print(alphas(1))
-        beta1, beta2 = betas(D)
         #x = Variable(3, name='x')
 
         # Problem 1
@@ -69,24 +70,32 @@ if __name__ == "__main__":
         # cons3 =
         # cons4 =
         # constraints = [cons1 <= Lmax, cons2 >= Tw_min, cons3 <= Tw_max, cons4 <= (1/4) ]
-
-        x = np.linspace(Tw_min, Tw_max)
-
-        plt.plot(x, energy_fun(x), color='blue', label='fun')
+        label = ""+str(round(1/t, 3))+" pkt/min"
+        plt.plot(x, energy_fun(x), label=label)
         plt.xlabel('Tw')
         plt.ylabel('Energy consumed')
-        plt.title('Energy function of Tw with Fs = ' + str(t) + " pkt/min")
-        plt.show()
+        plt.title("Energy function of Tw with different Fs")
 
-        plt.plot(x, delay_fun(x), color='blue', label='fun')
-        plt.xlabel('Tw')
-        plt.ylabel('Delay time')
-        plt.title('Delay function of Tw with Fs = ' + str(t) + " pkt/min")
-        plt.show()
+    plt.legend()
+    plt.show()
 
-        plt.plot(energy_fun(x), delay_fun(x), color='blue', label='fun')
+    plt.plot(x, delay_fun(x), color='red', label='fun')
+    plt.xlabel('Tw')
+    plt.ylabel('Delay time')
+    plt.title("Delay function of Tw")
+    plt.show()
+
+    for t in time:
+        Fs = 1.0 / (t * 60 * 1000)
+        alpha1, alpha2, alpha3 = alphas(1)
+        beta1, beta2 = betas(D)
+
+        title = ""+str(round(1/t, 3))+" pkt/min"
+        plt.plot(energy_fun(x), delay_fun(x), color="green")
         plt.xlabel('Energy')
         plt.ylabel('Delay')
-        plt.title('Energy-Delay function with Fs = ' + str(t) + " pkt/min")
+        plt.title("Energy-Delay function with "+title)
         plt.show()
+
+
 
