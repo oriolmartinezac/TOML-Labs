@@ -63,23 +63,13 @@ def delay_fun(tw):
 
 
 if __name__ == "__main__":
-
     time = [1, 5, 10, 15, 20, 25]
     alpha_1, alpha_2, alpha_3 = 0.0, 0.0, 0.0
     x = np.linspace(Tw_min, Tw_max)
+
     for t in time:
         Fs = 1.0 / (t * 60 * 1000)
         alpha_1, alpha_2, alpha_3 = calc_alphas(1)
-
-        # x = Variable(3, name='x')
-
-        # Problem 1
-        # obj_fun = alpha1/Tw + alpha2 * Tw + alpha3#E(Tw) -> energy
-        # cons1 = beta1 * Tw + beta2
-        # cons2 =
-        # cons3 =
-        # cons4 =
-        # constraints = [cons1 <= Lmax, cons2 >= Tw_min, cons3 <= Tw_max, cons4 <= (1/4) ]
         label = "" + str(round(1 / t, 3)) + " pkt/min"
         plt.plot(x, energy_fun(x), label=label)
         plt.xlabel('Tw')
@@ -100,10 +90,57 @@ if __name__ == "__main__":
         Fs = 1.0 / (t * 60 * 1000)
         alpha_1, alpha_2, alpha_3 = calc_alphas(1)
         beta_1, beta_2 = calc_betas(D)
-
         title = "" + str(round(1 / t, 3)) + " pkt/min"
         plt.plot(energy_fun(x), delay_fun(x), color="green")
         plt.xlabel('Energy')
         plt.ylabel('Delay')
         plt.title("Energy-Delay function with " + title)
         plt.show()
+
+###### 2. PART
+x = cvxpy.Variable(1, name='x')
+
+alpha1, alpha2, alpha3 = calc_alphas(1)
+beta1, beta2 = calc_betas(D)
+
+Tt_x = (x[0] / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
+E1_tx = (Tcs + Tal + Tt_x) * calc_f_i(1)
+
+prob1_solves = []
+np_L = np.linspace(100, 5000)
+
+for l_item in np_L:
+    obj_fun1 = alpha1 * cvxpy.power(x[0], -1) + alpha2 * x[0] + alpha3
+    cons1 = beta1 * x[0] + beta2
+    cons2 = x[0]
+    cons3 = abs(calc_i_d(0)) * E1_tx
+    constraints = [cons1 <= l_item, cons2 >= Tw_min, cons3 <= (1 / 4)]
+
+    prob1 = cvxpy.Problem(cvxpy.Minimize(obj_fun1), constraints)
+    prob1_solves.append(prob1.solve())
+    print("solve", prob1.solve())  # Returns the optimal value.
+
+plt.plot(np_L, prob1_solves, color="blue")
+plt.xlabel('L_max')
+plt.ylabel('Minimization')
+plt.title("Problem 1 to optimize")
+plt.show()
+
+prob2_solves = []
+np_E = np.linspace(0.5, 5)
+
+for e_item in np_E:
+    obj_fun2 = beta1 * x[0] + beta2
+    cons1 = alpha1 * cvxpy.power(x[0], -1) + alpha2 * x[0] + alpha3
+    cons2 = x[0]
+    cons3 = abs(calc_i_d(0)) * E1_tx
+    constraints = [cons1 <= e_item, cons2 >= Tw_min, cons3 <= (1 / 4)]
+    prob2 = cvxpy.Problem(cvxpy.Minimize(obj_fun2), constraints)
+    prob2_solves.append(prob2.solve())
+    print("solve", prob2.solve())  # Returns the optimal value.
+
+plt.plot(np_E, prob2_solves, color="blue")
+plt.xlabel('E_budget')
+plt.ylabel('Minimization')
+plt.title("Problem 2 to optimize")
+plt.show()
