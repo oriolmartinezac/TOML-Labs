@@ -1,16 +1,8 @@
 from header import *  # IMPORTING HEADER FILE
 import matplotlib.pyplot as plt
-import gpkit
 import cvxpy
-import gpkit.nomials
 import math
 
-def ceiling(x):
-    decimal=x%1 #get fractional part of input
-    if decimal > 0: #round up if fractional part >0
-        return (x-decimal)+1
-    else: #input was an integer => no rounding
-        return x
 
 def calc_n_d(d):
     n_d = (2 * d - 1) * C
@@ -108,39 +100,36 @@ if __name__ == "__main__":
         plt.show()
 
 # PART 2 #
-#x = cvxpy.Variable(1, name='x')
-x = gpkit.Variable("x")
+x = cvxpy.Variable(1, name='x')
 
 alpha1, alpha2, alpha3 = calc_alphas(1)
 beta1, beta2 = calc_betas(D)
 
-Tt_x = (x / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
+Tt_x = cvxpy.ceil(x[0] / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
 E1_tx = (Tcs + Tal + Tt_x) * calc_f_out(1)
 
 prob1_solves = []
 np_L = np.linspace(100, 5000)
 
 for l_item in np_L:
-    obj_fun1 = alpha1/x + alpha2 * x + alpha3
-    cons1 = beta1 * x + beta2
-    cons2 = x
+    obj_fun1 = alpha1 * cvxpy.power(x[0], -1) + alpha2 * x[0] + alpha3
+    cons1 = beta1 * x[0] + beta2
+    cons2 = x[0]
     cons3 = abs(calc_i_d(0)) * E1_tx
     constraints = [cons1 <= l_item, cons2 >= Tw_min, cons3 <= (1 / 4)]
-    prob1 = gpkit.Model(obj_fun1, constraints)
-    solution = prob1.solve()
-    prob1_solves.append(solution["cost"])
+    prob1 = cvxpy.Problem(cvxpy.Minimize(obj_fun1), constraints)
+    prob1_solves.append(prob1.solve(verbose=False))
     #print("solve", prob1.solve())  # Returns the optimal value.
 
 print(prob1_solves)
 
 plt.plot(np_L, prob1_solves, color="blue")
-
 plt.xlabel('L_max')
 plt.ylabel('Minimization')
 plt.title("Problem 1 to optimize")
 plt.show()
 print("The best solution of Tw in Energy function is", min(prob1_solves))
-E_worst = max(prob1_solves)
+L_worst = prob1_solves[0]
 #print(E_worst)
 #print("Te worst solution of Tw in Energy function is", E_worst)
 
@@ -148,14 +137,13 @@ prob2_solves = []
 np_E = np.linspace(0.5, 5)
 
 for e_item in np_E:
-    obj_fun2 = beta1 * x + beta2
-    cons1 = alpha1 / x + alpha2 * x + alpha3
-    cons2 = x
+    obj_fun2 = beta1 * x[0] + beta2
+    cons1 = alpha1 * cvxpy.power(x[0], -1) + alpha2 * x[0] + alpha3
+    cons2 = x[0]
     cons3 = abs(calc_i_d(0)) * E1_tx
     constraints = [cons1 <= e_item, cons2 >= Tw_min, cons3 <= (1 / 4)]
-    prob2 = gpkit.Model(obj_fun2, constraints)
-    solution = prob2.solve()
-    prob2_solves.append(solution["cost"])
+    prob2 = cvxpy.Problem(cvxpy.Minimize(obj_fun2), constraints)
+    prob2_solves.append(prob2.solve())
     # print("solve", prob2.solve())  # Returns the optimal value.
 
 print(prob2_solves)
@@ -167,8 +155,9 @@ plt.show()
 #print("The best solution of Tw in Delay function is", min(prob2_solves))
 #E_worst = prob1_solves[-1]
 #print("Te worst solution of Tw in Delay function is", L_worst)
-L_worst = max(prob2_solves)
 
+E_worst = max(energy_fun(np_E))
+L_worst = min(delay_fun(np_L))
 
 plt.plot(energy_fun(np_E), delay_fun(np_L), color="green")
 
