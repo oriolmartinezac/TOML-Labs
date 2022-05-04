@@ -165,6 +165,7 @@ Tw_n = np.linspace(50, 300, 100)
 index = 1
 colour_index = 0
 for l_item in np_L:
+    E_worst = 0.05
     L_worst = l_item
     x = cvxpy.Variable(3, name='x')
     Tt_x_3 = (x[2] / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
@@ -202,6 +203,8 @@ for l_item in np_L:
                    label='Tradeoff Point with Lmax=' + str(l_item))
         colour_index += 1
     index += 1
+
+
 
 plt.plot(energy_fun(Tw_n), delay_fun(Tw_n), color='b')
 plt.xlabel("E(Tw)")
