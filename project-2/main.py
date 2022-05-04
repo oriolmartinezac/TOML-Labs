@@ -94,11 +94,12 @@ if __name__ == "__main__":
         Fs = 1.0 / (t * 60 * 1000)
         alpha_1, alpha_2, alpha_3 = calc_alphas(1)
         beta_1, beta_2 = calc_betas(D)
-        title = "" + str(round(1 / t, 3)) + " pkt/min"
+        label = "" + str(round(1 / t, 3)) + " pkt/min"
         plt.plot(energy_fun(x), delay_fun(x), label=label)
         plt.xlabel('Energy')
         plt.ylabel('Delay')
-        plt.title("Energy-Delay function with " + title)
+        plt.title("Energy-Delay")
+    plt.legend()
     plt.show()
 
 # PART 2 #
