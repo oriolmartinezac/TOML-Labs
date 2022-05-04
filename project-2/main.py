@@ -88,7 +88,7 @@ if __name__ == "__main__":
     plt.title("Delay function of Tw")
     plt.show()
 
-    x = np.linspace(0, Tw_max)
+    x = np.linspace(10, Tw_max)
 
     for t in time:
         Fs = 1.0 / (t * 60 * 1000)
