@@ -107,7 +107,7 @@ beta1, beta2 = calc_betas(D)
 Tt_x = (x / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
 E1_tx = (Tcs + Tal + Tt_x) * calc_f_out(1)
 prob1_solves = []
-np_L = np.linspace(100, 5000)
+np_L = np.linspace(100, 5000, 50)
 
 for l_item in np_L:
     obj_fun1 = alpha1 / x + alpha2 * x + alpha3
@@ -127,7 +127,7 @@ plt.title("Problem 1 to optimize")
 plt.show()
 
 prob2_solves = []
-np_E = np.linspace(0.5, 5)
+np_E = np.linspace(0.5, 5, 50)
 
 for e_item in np_E:
     obj_fun2 = beta1 * x + beta2
@@ -204,10 +204,63 @@ for l_item in np_L:
         colour_index += 1
     index += 1
 
+plt.plot(energy_fun(Tw_n), delay_fun(Tw_n), color='b')
+plt.xlabel("E(Tw)")
+plt.ylabel("L(Tw)")
+plt.legend(loc="upper right")
+plt.show()
 
+index = 0
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+
+for e_item in np_E:
+    E_worst = e_item
+    L_worst = 500
+    x = cvxpy.Variable(3, name='x')
+    Tt_x_3 = (x[2] / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
+    E1_tx_3 = (Tcs + Tal + Tt_x_3) * calc_f_out(1)
+    obj_fun_game = - cvxpy.log(E_worst - x[0]) - cvxpy.log(L_worst - x[1])
+    cons1 = E_worst
+    cons2 = x[0]
+    cons3 = L_worst
+    cons4 = x[1]
+    cons5 = x[2]
+    cons6 = abs(calc_i_d(0)) * E1_tx_3
+    constraints = [cons1 >= (alpha1 * cvxpy.power(x[2], -1) + alpha2 * x[2] + alpha3),
+                   cons2 >= (alpha1 * cvxpy.power(x[2], -1) + alpha2 * x[2] + alpha3),
+                   cons3 >= (beta1 * x[2] + beta2),
+                   cons4 >= (beta1 * x[2] + beta2),
+                   cons5 >= Tw_min,
+                   cons6 <= (1 / 4)]
+
+    prob3 = cvxpy.Problem(cvxpy.Minimize(obj_fun_game), constraints)
+    try:
+        result = prob3.solve()
+    except cvxpy.SolverError:
+        result = prob3.solve(solver=cvxpy.SCS)
+
+    print("optimal value p* = ", prob3.value)
+    print("optimal var: E_1 = ", x[0].value)
+    print("optimal var: L_1 = ", x[1].value)
+    print("optimal var: T_w = ", x[2].value)
+    if index == 5:  # FEASIBLE POINT
+        ax.scatter(x[0].value, x[1].value, color=colours[colour_index % size_colours],
+                   label='Tradeoff Point with Ebudget=' + str(round(e_item, 2)))
+        colour_index += 1
+    elif index % 10 == 0:
+        ax.scatter(x[0].value, x[1].value, color=colours[colour_index % size_colours],
+                   label='Tradeoff Point with Ebudget=' + str(round(e_item, 2)))
+        colour_index += 1
+    index += 1
 
 plt.plot(energy_fun(Tw_n), delay_fun(Tw_n), color='b')
 plt.xlabel("E(Tw)")
 plt.ylabel("L(Tw)")
 plt.legend(loc="upper right")
 plt.show()
+
+
+
+
+
