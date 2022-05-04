@@ -1,3 +1,5 @@
+import random
+
 from header import *  # IMPORTING HEADER FILE
 import matplotlib.pyplot as plt
 import gpkit
@@ -65,7 +67,7 @@ def delay_fun(tw):
 
 if __name__ == "__main__":
     # PART 1 #
-    time = [1, 5, 10, 15, 20, 25]
+    time = [5, 10, 15, 20, 25]
     alpha_1, alpha_2, alpha_3 = 0.0, 0.0, 0.0
     x = np.linspace(Tw_min, Tw_max)
 
@@ -103,41 +105,74 @@ if __name__ == "__main__":
     plt.show()
 
     # PART 2 #
-
-    x = gpkit.Variable("x")
-    alpha1, alpha2, alpha3 = calc_alphas(1)
-    beta1, beta2 = calc_betas(D)
-    Tt_x = (x / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
-    E1_tx = (Tcs + Tal + Tt_x) * calc_f_out(1)
     prob1_solves = []
     np_L = np.linspace(100, 5000, 50)
-
+    list_Lmax = [500, 750, 1000, 2500, 5000]
     tw_np = np.linspace(Tw_min, Tw_max)
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
+    Tw_linsp = np.linspace(70, 500, 100)
 
-    #for t in time:
+    colours_plot = ['blue', 'purple', 'green', 'yellow', 'black']
+    size_colours = len(colours_plot)
+    colour_index = 0
 
-    for l_item in np_L:
-        Fs = 1.0/(15*60*1000)
-        obj_fun1 = alpha1 / x + alpha2 * x + alpha3
-        cons1 = beta1 * x + beta2
-        cons2 = x
-        cons3 = abs(calc_i_d(0)) * E1_tx
-        constraints = [cons1 <= Lmax, cons2 >= Tw_min, cons3 <= (1 / 4)]
-        prob1 = gpkit.Model(obj_fun1, constraints)
-        solution = prob1.solve()
-        print(solution['variables']['x'], solution['cost'])
-        #prob1_solves.append([solution['variables']['x'], solution["cost"]])
-        prob1_solves.append(solution['cost'])
-        plt.plot(tw_np, energy_fun(tw_np), color="blue")
-        ax.scatter(solution['variables']['x'], solution['cost'])
+    for tw_element in list_Lmax:
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
+        for t in time:
+            x = gpkit.Variable("x")
 
+            Fs = 1.0 / (t * 60 * 1000)
+            alpha_1, alpha_2, alpha_3 = calc_alphas(1)
+            beta_1, beta_2 = calc_betas(D)
+            #Tt_x = (x / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
+            Tt_x = x / 2 + Tack + Tdata
+            E1_tx = (Tcs + Tal + Tt_x) * calc_f_out(1)
+
+            obj_fun1 = alpha_1 / x + alpha_2 * x + alpha_3
+            cons1 = beta_1 * x + beta_2
+            cons2 = x
+            cons3 = abs(calc_i_d(0)) * E1_tx
+            constraints = [cons1 <= tw_element, cons2 >= Tw_min, cons3 <= 1 / 4]
+            prob1 = gpkit.Model(obj_fun1, constraints)
+            solution = prob1.solve()
+            print(solution['variables']['x'], solution['cost'])
+            # prob1_solves.append([solution['variables']['x'], solution["cost"]])
+            prob1_solves.append(solution['cost'])
+            plt.plot(tw_np, energy_fun(tw_np), color=colours_plot[colour_index % size_colours], label='E(Tw) for Fs('+str(t)+'min)')
+            colour_index += 1
+            ax.scatter(solution['variables'][x], solution['cost'], color="red")
+
+        plt.xlabel('Tw(ms)')
+        plt.legend(loc='upper right')
+        plt.title("L_max="+str(tw_element))
+        plt.show()
+
+    for t in time:
+        Fs = 1.0 / (t * 60 * 1000)
+        alpha1, alpha2, alpha3 = calc_alphas(1)
+        beta1, beta2 = calc_betas(D)
+        Tt_x = (x / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
+        E1_tx = (Tcs + Tal + Tt_x) * calc_f_out(1)
+        for tw_element in tw_np:
+            obj_fun1 = alpha1 / x + alpha2 * x + alpha3
+            cons1 = beta1 * x + beta2
+            cons2 = x
+            cons3 = abs(calc_i_d(0)) * E1_tx
+            constraints = [cons1 <= tw_element, cons2 >= Tw_min, cons3 <= (1 / 4)]
+            prob1 = gpkit.Model(obj_fun1, constraints)
+            solution = prob1.solve()
+            print(solution['variables']['x'], solution['cost'])
+            #prob1_solves.append([solution['variables']['x'], solution["cost"]])
+            prob1_solves.append(solution['cost'])
+
+            ax.scatter(solution['variables']['x'], solution['cost'])
+
+        plt.plot(tw_np, energy_fun(tw_np))
     #plt.plot(np_L, prob1_solves, color="blue")
-    plt.xlabel('L_max')
-    plt.ylabel('Minimization')
-    plt.title("Problem 1 to optimize")
-    plt.show()
+        plt.xlabel('L_max')
+        plt.ylabel('Minimization')
+        plt.title("asd")
+        plt.show()
 
     prob2_solves = []
     np_E = np.linspace(0.5, 5, 50)
