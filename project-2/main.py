@@ -88,16 +88,18 @@ if __name__ == "__main__":
     plt.title("Delay function of Tw")
     plt.show()
 
+    x = np.linspace(0, Tw_max)
+
     for t in time:
         Fs = 1.0 / (t * 60 * 1000)
         alpha_1, alpha_2, alpha_3 = calc_alphas(1)
         beta_1, beta_2 = calc_betas(D)
         title = "" + str(round(1 / t, 3)) + " pkt/min"
-        plt.plot(energy_fun(x), delay_fun(x), color="green")
+        plt.plot(energy_fun(x), delay_fun(x), label=label)
         plt.xlabel('Energy')
         plt.ylabel('Delay')
         plt.title("Energy-Delay function with " + title)
-        plt.show()
+    plt.show()
 
 # PART 2 #
 x = gpkit.Variable("x")
@@ -118,7 +120,8 @@ for l_item in np_L:
     prob1 = gpkit.Model(obj_fun1, constraints)
     solution = prob1.solve()
     print(solution['variables']['x'], solution['cost'])
-    prob1_solves.append([solution['variables']['x'], solution["cost"]])
+    #prob1_solves.append([solution['variables']['x'], solution["cost"]])
+    prob1_solves.append(solution['cost'])
 
 plt.plot(np_L, prob1_solves, color="blue")
 plt.xlabel('L_max')
@@ -162,9 +165,17 @@ beta1, beta2 = calc_betas(D)
 colours = ['red', 'green', 'yellow', 'black', 'purple', 'orange']
 size_colours = len(colours)
 Tw_n = np.linspace(50, 300, 100)
+
+
+
 index = 1
 colour_index = 0
-for l_item in np_L:
+
+np_new_L = np.linspace(500, 5000, 5)
+
+Fs = 1.0/(30*60*1000)
+
+for l_item in np_new_L:
     E_worst = 0.05
     L_worst = l_item
     x = cvxpy.Variable(3, name='x')
@@ -213,7 +224,7 @@ plt.show()
 index = 1
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
-
+"""
 for e_item in np.linspace(0.05, 2.5, 50):
     E_worst = e_item
     L_worst = 500
@@ -264,3 +275,4 @@ plt.show()
 
 
 
+"""
