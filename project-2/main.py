@@ -3,17 +3,6 @@ import matplotlib.pyplot as plt
 import gpkit
 import cvxpy
 import gpkit.nomials
-import math
-import sys
-
-
-def ceiling(x):
-    decimal = x % 1  # get fractional part of input
-    if decimal > 0:  # round up if fractional part >0
-        return (x - decimal) + 1
-    else:  # input was an integer => no rounding
-        return x
-
 
 def calc_n_d(d):
     n_d = (2 * d - 1) * C
