@@ -108,15 +108,12 @@ if __name__ == "__main__":
         plt.show()
 
 # PART 2 #
-#x = cvxpy.Variable(1, name='x')
 x = gpkit.Variable("x")
 
 alpha1, alpha2, alpha3 = calc_alphas(1)
 beta1, beta2 = calc_betas(D)
-
 Tt_x = (x / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata
 E1_tx = (Tcs + Tal + Tt_x) * calc_f_out(1)
-
 prob1_solves = []
 np_L = np.linspace(100, 5000)
 
@@ -131,18 +128,13 @@ for l_item in np_L:
     prob1_solves.append(solution["cost"])
     #print("solve", prob1.solve())  # Returns the optimal value.
 
-print(prob1_solves)
+L_worst = delay_fun(max(prob1_solves))
 
 plt.plot(np_L, prob1_solves, color="blue")
-
 plt.xlabel('L_max')
 plt.ylabel('Minimization')
 plt.title("Problem 1 to optimize")
 plt.show()
-print("The best solution of Tw in Energy function is", min(prob1_solves))
-E_worst = max(prob1_solves)
-#print(E_worst)
-#print("Te worst solution of Tw in Energy function is", E_worst)
 
 prob2_solves = []
 np_E = np.linspace(0.5, 5)
@@ -158,20 +150,15 @@ for e_item in np_E:
     prob2_solves.append(solution["cost"])
     # print("solve", prob2.solve())  # Returns the optimal value.
 
-print(prob2_solves)
+E_worst = energy_fun(max(prob2_solves))
+
 plt.plot(np_E, prob2_solves, color="blue")
 plt.xlabel('E_budget')
 plt.ylabel('Minimization')
 plt.title("Problem 2 to optimize")
 plt.show()
-#print("The best solution of Tw in Delay function is", min(prob2_solves))
-#E_worst = prob1_solves[-1]
-#print("Te worst solution of Tw in Delay function is", L_worst)
-L_worst = max(prob2_solves)
-
 
 plt.plot(energy_fun(np_E), delay_fun(np_L), color="green")
-
 plt.xlabel('Energy')
 plt.ylabel('Delay')
 plt.title("Energy-Delay function")
@@ -210,7 +197,7 @@ print("optimal var: E_1 = ", x[0].value)
 print("optimal var: L_1 = ", x[1].value)
 print("optimal var: T_w = ", x[2].value)
 
-plt.plot(energy_fun(np_E), delay_fun(np_L), color="green")
+#plt.plot(energy_fun(new_e), delay_fun(new_l), color="green")
 
 
 plt.xlabel('Energy')
@@ -218,4 +205,4 @@ plt.ylabel('Delay')
 plt.title("Energy-Delay function")
 plt.show()
 
-plt.plot(x[0].value, x[1].value, 'o', color='red')
+#plt.plot(x[0].value, x[1].value, 'o', color='red')
