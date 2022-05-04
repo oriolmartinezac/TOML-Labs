@@ -117,8 +117,8 @@ for l_item in np_L:
     constraints = [cons1 <= l_item, cons2 >= Tw_min, cons3 <= (1 / 4)]
     prob1 = gpkit.Model(obj_fun1, constraints)
     solution = prob1.solve()
-    print(solution['cost'])
-    prob1_solves.append(solution["cost"])
+    print(solution['variables']['x'], solution['cost'])
+    prob1_solves.append([solution['variables']['x'], solution["cost"]])
 
 plt.plot(np_L, prob1_solves, color="blue")
 plt.xlabel('L_max')
@@ -137,8 +137,8 @@ for e_item in np_E:
     constraints = [cons1 <= e_item, cons2 >= Tw_min, cons3 <= (1 / 4)]
     prob2 = gpkit.Model(obj_fun2, constraints)
     solution = prob2.solve()
-    print(solution['cost'])
-    prob2_solves.append(solution["cost"])
+    print(solution['variables']['x'], solution['cost'])
+    prob2_solves.append([solution['variables']['x'], solution["cost"]])
 
 plt.plot(np_E, prob2_solves, color="blue")
 plt.xlabel('E_budget')
@@ -210,11 +210,11 @@ plt.ylabel("L(Tw)")
 plt.legend(loc="upper right")
 plt.show()
 
-index = 0
+index = 1
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
-for e_item in np_E:
+for e_item in np.linspace(0.05, 2.5, 50):
     E_worst = e_item
     L_worst = 500
     x = cvxpy.Variable(3, name='x')
@@ -244,7 +244,7 @@ for e_item in np_E:
     print("optimal var: E_1 = ", x[0].value)
     print("optimal var: L_1 = ", x[1].value)
     print("optimal var: T_w = ", x[2].value)
-    if index == 5:  # FEASIBLE POINT
+    if index == 1:  # FEASIBLE POINT
         ax.scatter(x[0].value, x[1].value, color=colours[colour_index % size_colours],
                    label='Tradeoff Point with Ebudget=' + str(round(e_item, 2)))
         colour_index += 1
