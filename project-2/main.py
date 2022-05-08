@@ -138,7 +138,7 @@ if __name__ == "__main__":
             prob1 = gpkit.Model(obj_fun1, constraints)
             solution = prob1.solve()
             print(solution['variables']['x'], solution['cost'])
-            prob1_solves.append([solution['variables'][x], solution["cost"]])
+            prob1_solves.append(solution["cost"])
             plt.plot(tw_np, energy_fun(tw_np), color=colours_plot[colour_index % size_colours], label='E(Tw) for Fs('+str(t)+'min)')
             colour_index += 1
             ax.scatter(solution['variables'][x], solution['cost'], color="red")
@@ -172,7 +172,7 @@ if __name__ == "__main__":
         prob2 = gpkit.Model(obj_fun2, constraints)
         solution = prob2.solve()
         print(solution['variables'][x], solution['cost'])
-        prob2_solves.append([solution['variables'][x], solution["cost"]])
+        prob2_solves.append(solution["cost"])
         plt.plot(tw_np, delay_fun(tw_np), color=colours_plot[colour_index % size_colours])
         colour_index += 1
         ax.scatter(solution['variables'][x], solution['cost'], color="red")
@@ -215,23 +215,20 @@ if __name__ == "__main__":
     # PART 3 #
     # Game
 
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
     colours = ['red', 'green', 'yellow', 'black', 'purple', 'orange']
     size_colours = len(colours)
     Tw_n = np.linspace(50, 300, 100)
-
-    index = 1
-    colour_index = 0
+    Tw_n2 = np.linspace(Tw_min, Tw_max)
 
     np_new_L = np.linspace(500, 5000, 5)
-
-    for l_item in np_L:
-        E_worst = 0.05
+    np_l_2 = [500, 750, 1250, 2000, 2500]
+    L_best = max(prob2_solves)
+    E_best = min(prob1_solves)
+    E_worst = max(prob1_solves)
+    for l_item in np_l_2:
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
         L_worst = l_item
-        L_best = max(prob2_solves[1][:])
-        E_best = min(prob1_solves[1][:])
-        E_worst = max(prob1_solves[1][:])
 
         x = cvxpy.Variable(3, name='x')
         Fs = 1.0 / (15 * 60 * 1000)
@@ -258,35 +255,37 @@ if __name__ == "__main__":
             result = prob3.solve()
         except cvxpy.SolverError:
             result = prob3.solve(solver=cvxpy.SCS)
-
+        print("LMAX=" +str(l_item))
         print("optimal value p* = ", prob3.value)
         print("optimal var: E_1 = ", x[0].value)
         print("optimal var: L_1 = ", x[1].value)
         print("optimal var: T_w = ", x[2].value)
-        #ax.scatter(E_best, L_best, color="orange", label="[Ebest, Lbest] = [" + str(E_best) + ", " + str(L_best) + "]")
-        #plt.plot(x_values, y_values, linestyle="--")
-        if index == 5:  # FEASIBLE POINT
-            ax.scatter(x[0].value, x[1].value, color=colours[colour_index % size_colours],
-                       label='Tradeoff Point with Lmax=' + str(l_item))
-            colour_index += 1
-        elif index % 10 == 0:
-            ax.scatter(x[0].value, x[1].value, color=colours[colour_index % size_colours],
-                       label='Tradeoff Point with Lmax=' + str(l_item))
-            colour_index += 1
-        index += 1
+        #PLOTING WORST
+        x_values = [E_worst, x[0].value]
+        y_values = [L_worst, x[1].value]
+        ax.scatter(E_worst, L_worst, color="green",
+                   label="[Eworst, Lworst] = [" + str(E_worst) + ", " + str(L_worst) + "]")
+        plt.plot(x_values, y_values, linestyle="--")
 
-    plt.plot(energy_fun(Tw_n), delay_fun(Tw_n), color='b')
-    plt.xlabel("E(Tw)")
-    plt.ylabel("L(Tw)")
-    plt.legend(loc="upper right")
-    plt.savefig("game_theory.jpg")
-    plt.show()
+        #PLOTING BEST
+        x_values = [E_worst, E_best]
+        y_values = [L_worst, L_best]
+        ax.scatter(E_best, L_best, color="orange", label="[Ebest, Lbest] = [" + str(E_best) + ", " + str(L_best) + "]")
+        plt.plot(x_values, y_values, linestyle="--")
 
-    index = 1
-    #fig = plt.figure()
-    #ax = fig.add_subplot(1, 1, 1)
+        ax.scatter(x[0].value, x[1].value, color="red",
+                   label='Tradeoff Point with Lmax=' + str(l_item))
+
+        plt.plot(energy_fun(Tw_n2), delay_fun(Tw_n2), color='b')
+        plt.xlabel("E(Tw)")
+        plt.ylabel("L(Tw)")
+        plt.legend(loc="upper right")
+        plt.savefig("game_theory_lmax_"+str(l_item)+".jpg")
+        plt.show()
 
     """
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
     #E_BUDGET PLOT
     for e_item in np.linspace(0.05, 2.5, 50):
         E_worst = e_item
