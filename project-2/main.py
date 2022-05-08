@@ -67,14 +67,15 @@ def delay_fun(tw):
 
 if __name__ == "__main__":
     # PART 1 #
+    time1 = [1, 5, 10, 15, 20, 25, 30]
     time = [5, 10, 15, 20, 25]
     alpha_1, alpha_2, alpha_3 = 0.0, 0.0, 0.0
     x = np.linspace(Tw_min, Tw_max)
 
-    for t in time:
+    for t in time1:
         Fs = 1.0 / (t * 60 * 1000)
         alpha_1, alpha_2, alpha_3 = calc_alphas(1)
-        label = "" + str(round(1 / t, 3)) + " pkt/min"
+        label = "Fs= "+str(t)
         plt.plot(x, energy_fun(x), label=label)
         plt.xlabel('Tw')
         plt.ylabel('Energy consumed')
@@ -82,30 +83,30 @@ if __name__ == "__main__":
 
     plt.legend()
     plt.savefig("1-energy.jpg")
-    #plt.show()
+    plt.show()
 
     beta_1, beta_2 = calc_betas(D)
     plt.plot(x, delay_fun(x), color='red', label='fun')
     plt.xlabel('Tw')
     plt.ylabel('Delay time')
     plt.title("Delay function of Tw")
-    plt.savefig("2-delay.jpg")
-    #plt.show()
+    plt.savefig("1-delay.jpg")
+    plt.show()
 
     x = np.linspace(10, Tw_max)
 
-    for t in time:
+    for t in time1:
         Fs = 1.0 / (t * 60 * 1000)
         alpha_1, alpha_2, alpha_3 = calc_alphas(1)
         beta_1, beta_2 = calc_betas(D)
-        label = "" + str(round(1 / t, 3)) + " pkt/min"
+        label = "Fs= "+str(t)
         plt.plot(energy_fun(x), delay_fun(x), label=label)
         plt.xlabel('Energy')
         plt.ylabel('Delay')
         plt.title("Energy-Delay")
     plt.legend()
-    plt.savefig("energy-delay.jpg")
-    #plt.show()
+    plt.savefig("1-energy-delay.jpg")
+    plt.show()
 
     # PART 2 #
     prob1_solves = []
@@ -147,7 +148,7 @@ if __name__ == "__main__":
         plt.legend(loc='upper right')
         plt.title("L_max="+str(l_element))
         plt.savefig("2-"+str(l_element)+".jpg")
-        #plt.show()
+        plt.show()
 
     colour_index = 0
     list_Ebudget = [0.5, 1.0, 2.0, 3.0, 4.0, 5.0]
@@ -180,7 +181,7 @@ if __name__ == "__main__":
     plt.ylabel('Delay')
     plt.title("All Ebudgets")
     plt.savefig("allebudgets.jpg")
-    #plt.show()
+    plt.show()
 
     """
     #Previous E_BUDGET for exercise 2
@@ -271,11 +272,11 @@ if __name__ == "__main__":
     plt.ylabel("L(Tw)")
     plt.legend(loc="upper right")
     plt.savefig("game_theory.jpg")
-    #plt.show()
+    plt.show()
 
     index = 1
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
+    #fig = plt.figure()
+    #ax = fig.add_subplot(1, 1, 1)
 
     """
     #E_BUDGET PLOT
