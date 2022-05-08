@@ -81,14 +81,16 @@ if __name__ == "__main__":
         plt.title("Energy function of Tw with different Fs")
 
     plt.legend()
-    plt.show()
+    plt.savefig("1-energy.jpg")
+    #plt.show()
 
     beta_1, beta_2 = calc_betas(D)
     plt.plot(x, delay_fun(x), color='red', label='fun')
     plt.xlabel('Tw')
     plt.ylabel('Delay time')
     plt.title("Delay function of Tw")
-    plt.show()
+    plt.savefig("2-delay.jpg")
+    #plt.show()
 
     x = np.linspace(10, Tw_max)
 
@@ -102,7 +104,8 @@ if __name__ == "__main__":
         plt.ylabel('Delay')
         plt.title("Energy-Delay")
     plt.legend()
-    plt.show()
+    plt.savefig("energy-delay.jpg")
+    #plt.show()
 
     # PART 2 #
     prob1_solves = []
@@ -139,17 +142,18 @@ if __name__ == "__main__":
             colour_index += 1
             ax.scatter(solution['variables'][x], solution['cost'], color="red")
 
-        plt.xlabel('Tw(ms)')
+        plt.xlabel('Tw (ms)')
+        plt.ylabel('Energy (J)')
         plt.legend(loc='upper right')
         plt.title("L_max="+str(l_element))
-        plt.show()
+        plt.savefig("2-"+str(l_element)+".jpg")
+        #plt.show()
 
     colour_index = 0
     list_Ebudget = [0.5, 1.0, 2.0, 3.0, 4.0, 5.0]
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     prob2_solves = []
-    solution
 
     for e_element in list_Ebudget:
         x = gpkit.Variable("x")
@@ -172,9 +176,11 @@ if __name__ == "__main__":
         colour_index += 1
         ax.scatter(solution['variables'][x], solution['cost'], color="red")
 
-    plt.xlabel('Tw(ms)')
-    plt.title("All E_budget=")
-    plt.show()
+    plt.xlabel('Tw (ms)')
+    plt.ylabel('Delay')
+    plt.title("All Ebudgets")
+    plt.savefig("allebudgets.jpg")
+    #plt.show()
 
     """
     #Previous E_BUDGET for exercise 2
@@ -264,7 +270,8 @@ if __name__ == "__main__":
     plt.xlabel("E(Tw)")
     plt.ylabel("L(Tw)")
     plt.legend(loc="upper right")
-    plt.show()
+    plt.savefig("game_theory.jpg")
+    #plt.show()
 
     index = 1
     fig = plt.figure()
