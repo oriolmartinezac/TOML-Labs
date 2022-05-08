@@ -1,10 +1,13 @@
 import random
-
 from header import *  # IMPORTING HEADER FILE
 import matplotlib.pyplot as plt
 import gpkit
 import cvxpy
 import gpkit.nomials
+import math
+
+def game_thoery_plot(E_worst, L_worst, x):
+    return - math.log(E_worst - x[0]) - math.log(L_worst - x[1])
 
 def calc_n_d(d):
     n_d = (2 * d - 1) * C
@@ -111,7 +114,7 @@ if __name__ == "__main__":
     # PART 2 #
     prob1_solves = []
     np_L = np.linspace(100, 5000, 50)
-    list_Lmax = [500, 750, 1000, 2500, 5000]
+    list_Lmax = [100, 500, 1000, 2000, 3500, 5000]
     tw_np = np.linspace(Tw_min, Tw_max)
 
     colours_plot = ['blue', 'purple', 'green', 'yellow', 'black']
@@ -138,7 +141,8 @@ if __name__ == "__main__":
             prob1 = gpkit.Model(obj_fun1, constraints)
             solution = prob1.solve()
             print(solution['variables']['x'], solution['cost'])
-            prob1_solves.append(solution["cost"])
+            if l_element >= 500:
+                prob1_solves.append(solution["cost"])
             plt.plot(tw_np, energy_fun(tw_np), color=colours_plot[colour_index % size_colours], label='E(Tw) for Fs('+str(t)+'min)')
             colour_index += 1
             ax.scatter(solution['variables'][x], solution['cost'], color="red")
@@ -215,16 +219,19 @@ if __name__ == "__main__":
     # PART 3 #
     # Game
 
+
+
     colours = ['red', 'green', 'yellow', 'black', 'purple', 'orange']
     size_colours = len(colours)
     Tw_n = np.linspace(50, 300, 100)
     Tw_n2 = np.linspace(Tw_min, Tw_max)
 
     np_new_L = np.linspace(500, 5000, 5)
-    np_l_2 = [500, 750, 1250, 2000, 2500]
+    np_l_2 = [500, 750, 1500, 2000, 3500]
     L_best = max(prob2_solves)
     E_best = min(prob1_solves)
     E_worst = max(prob1_solves)
+
     for l_item in np_l_2:
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
