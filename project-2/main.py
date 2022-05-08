@@ -138,7 +138,7 @@ if __name__ == "__main__":
             prob1 = gpkit.Model(obj_fun1, constraints)
             solution = prob1.solve()
             print(solution['variables']['x'], solution['cost'])
-            prob1_solves.append(solution['cost'])
+            prob1_solves.append([solution['variables'][x], solution["cost"]])
             plt.plot(tw_np, energy_fun(tw_np), color=colours_plot[colour_index % size_colours], label='E(Tw) for Fs('+str(t)+'min)')
             colour_index += 1
             ax.scatter(solution['variables'][x], solution['cost'], color="red")
@@ -177,6 +177,7 @@ if __name__ == "__main__":
         colour_index += 1
         ax.scatter(solution['variables'][x], solution['cost'], color="red")
 
+
     plt.xlabel('Tw (ms)')
     plt.ylabel('Delay')
     plt.title("All Ebudgets")
@@ -213,6 +214,7 @@ if __name__ == "__main__":
     """
     # PART 3 #
     # Game
+
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     colours = ['red', 'green', 'yellow', 'black', 'purple', 'orange']
@@ -227,6 +229,10 @@ if __name__ == "__main__":
     for l_item in np_L:
         E_worst = 0.05
         L_worst = l_item
+        L_best = max(prob2_solves[1][:])
+        E_best = min(prob1_solves[1][:])
+        E_worst = max(prob1_solves[1][:])
+
         x = cvxpy.Variable(3, name='x')
         Fs = 1.0 / (15 * 60 * 1000)
         alpha_1, alpha_2, alpha_3 = calc_alphas(1)
@@ -257,6 +263,8 @@ if __name__ == "__main__":
         print("optimal var: E_1 = ", x[0].value)
         print("optimal var: L_1 = ", x[1].value)
         print("optimal var: T_w = ", x[2].value)
+        #ax.scatter(E_best, L_best, color="orange", label="[Ebest, Lbest] = [" + str(E_best) + ", " + str(L_best) + "]")
+        #plt.plot(x_values, y_values, linestyle="--")
         if index == 5:  # FEASIBLE POINT
             ax.scatter(x[0].value, x[1].value, color=colours[colour_index % size_colours],
                        label='Tradeoff Point with Lmax=' + str(l_item))
