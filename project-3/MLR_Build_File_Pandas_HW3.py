@@ -28,7 +28,7 @@ data_O3 = dir_path + "captor17013-sensor1.csv"
 ##### UPLOAD in a PANDAS FRAME the O3/environmental data 
 #####. i.e., (O3 sensor data, reference data, temperature and Relative humidity) 
 
-data_PR_O3 = pd.read_csv(data_O3,delimiter=';')
+data_PR_O3 = pd.read_csv(data_O3, delimiter=';')
 data_PR_O3.isnull().values.any()
 data_PR_O3 = data_PR_O3.dropna()
 data_PR_O3['date'] = pd.to_datetime(data_PR_O3['date']).dt.strftime('%Y-%m-%dT%H:%M')
@@ -37,7 +37,7 @@ print('O3', data_PR_O3.shape)
 
 #%%
 ##### UPLOAD NO2 data
-data_PR_NO2 = pd.read_csv(data_NO2,delimiter=';')
+data_PR_NO2 = pd.read_csv(data_NO2, delimiter=';')
 data_PR_NO2.isnull().values.any()
 data_PR_NO2 = data_PR_NO2.dropna()
 data_PR_NO2.head()
@@ -71,21 +71,19 @@ print('SO2', data_PR_SO2.shape)
 #### MERGE O3 and environmental data withe the NO2 data
 new_PR_data_inner = pd.merge(data_PR_O3, data_PR_NO2, how='inner', left_on='date', right_on='date')
 new_PR_data_inner.head()
-new_PR_data_inner.shape
-print('O3+NO2',new_PR_data_inner.shape)
+print('O3+NO2', new_PR_data_inner.shape)
 
 #%%
 #### MERGE the previous data with NO data
 new_PR_data_inner = pd.merge(new_PR_data_inner, data_PR_NO, how='inner', left_on='date',right_on='date')
 new_PR_data_inner.head()
-new_PR_data_inner.shape
 print('O3+NO2+NO', new_PR_data_inner.shape)
 
 #%%
 #### MERGE the previous data with SO2 data
 new_PR_data_inner = pd.merge(new_PR_data_inner, data_PR_SO2, how='inner', left_on='date', right_on='date')
 new_PR_data_inner.head()
-new_PR_data_inner.shape
+
 print('O3+NO2+NO+SO2', new_PR_data_inner.shape)
 
 #%%
