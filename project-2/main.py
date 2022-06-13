@@ -175,6 +175,7 @@ if __name__ == "__main__":
         constraints = [cons1 <= e_element, cons2 >= Tw_min, cons3 <= (1 / 4)]
         prob2 = gpkit.Model(obj_fun2, constraints)
         solution = prob2.solve()
+
         print(solution['variables'][x], solution['cost'])
         prob2_solves.append(solution["cost"])
         plt.plot(tw_np, delay_fun(tw_np), color=colours_plot[colour_index % size_colours])
@@ -187,7 +188,6 @@ if __name__ == "__main__":
     plt.title("All Ebudgets")
     plt.savefig("allebudgets.jpg")
     plt.show()
-
     """
     #Previous E_BUDGET for exercise 2
     prob2_solves = []
@@ -238,7 +238,7 @@ if __name__ == "__main__":
         L_worst = l_item
 
         x = cvxpy.Variable(3, name='x')
-        Fs = 1.0 / (15 * 60 * 1000)
+        Fs = 1.0 / (25 * 60 * 1000)
         alpha_1, alpha_2, alpha_3 = calc_alphas(1)
         beta_1, beta_2 = calc_betas(D)
         Tt_x_3 = (x[2] / (Tps + Tal)) * ((Tps + Tal) / 2) + Tack + Tdata

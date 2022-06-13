@@ -1,4 +1,5 @@
 import numdifftools as nd
+from scipy import optimize
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -14,6 +15,16 @@ def plot_fun(x, fN=1):
 
 def obj_fun2():
     return lambda x: 2*(x**4) - 4 * (x**2) + x - 0.5
+
+# First derivative
+def der_obj_fun(x):
+    return (8 * (x ** 3)) - (8 * x) + 1
+
+
+# Second derivative
+def sec_der_obj_func(x):
+    return (24 * (x ** 2)) - (8 * x)
+
 
 def gradient(obj_fun, stop_criteria, max_iterations, initial_guess, l_rate=0.01, fN = 1):
     cur_x = initial_guess
@@ -87,9 +98,16 @@ if __name__ == "__main__":
     plt.plot(x_dummy1, y_dummy1, color='blue', label='fun')
     plt.scatter(x, plot_fun(x), color='red', marker='x', label='opt')
 
+
+
     plt.show()
     print("NEWTON")
-    x = solver(obj_fun1, stop_criteria, max_iterations, x0, learning_rate, "newton")
+    n = optimize.newton(func=der_obj_fun, x0=x0, fprime=sec_der_obj_func, tol=stop_criteria, full_output=True)
+    r = n[1]
+    print("initial value:", x0)
+    print("SOLUTION FOUND")
+    print("Number of total iterations", r.iterations)
+    print("The local minimum occurs at", r.root)
     print("\n")
 
     # PLOT in 2D
@@ -118,9 +136,17 @@ if __name__ == "__main__":
 
         plt.show()
 
-        print("NEWTON")
+        """print("NEWTON")
         x = solver(obj_fun2, stop_criteria, max_iterations, element, learning_rate, "newton", 2)
         print("X: ", x)
+        print("\n")"""
+        print("NEWTON")
+        n = optimize.newton(func=der_obj_fun, x0=element, fprime=sec_der_obj_func, tol=stop_criteria, full_output=True)
+        r = n[1]
+        print("initial value:", element)
+        print("SOLUTION FOUND")
+        print("Number of total iterations", r.iterations)
+        print("The local minimum occurs at", r.root)
         print("\n")
 
         # PLOT in 2D
