@@ -8,7 +8,6 @@ def plot_sensor_data(new_PR_data_inner):
 
     # PLOT Refst from expensive Sensor_O3 against date
     new_PR_data_inner.plot(x='date', y='RefSt', color='red')
-    plt.gcf().autofmt_xdate()
     plt.show()
 
     # SCATTER PLOT LOW COST SENSOR O3 AGAINST REFST
@@ -16,9 +15,9 @@ def plot_sensor_data(new_PR_data_inner):
     plt.show()
 
     # Normalize the data
-    new_PR_data_inner['Sensor_O3'] = (new_PR_data_inner['Sensor_O3'] - new_PR_data_inner['Sensor_O3'].mean()) / \
+    new_PR_data_inner['Sensor_O3_norm'] = (new_PR_data_inner['Sensor_O3'] - new_PR_data_inner['Sensor_O3'].mean()) / \
                                      new_PR_data_inner['Sensor_O3'].std()
-    new_PR_data_inner['RefSt'] = (new_PR_data_inner['RefSt'] - new_PR_data_inner['RefSt'].mean()) / new_PR_data_inner[
+    new_PR_data_inner['RefSt_norm'] = (new_PR_data_inner['RefSt'] - new_PR_data_inner['RefSt'].mean()) / new_PR_data_inner[
         'RefSt'].std()
 
     # SCATTER PLOT LOW COST SENSOR O3 AGAINST REFST but now normalized data
@@ -27,7 +26,7 @@ def plot_sensor_data(new_PR_data_inner):
     normalized_plt.set_ylabel("RefSt normalized")
     plt.show()
 
-    columns_plot = new_PR_data_inner.columns[3:]  # Select only necessary columns
+    columns_plot = new_PR_data_inner.columns[3:-3]  # Select only necessary columns
 
     # PLOTS O3 against all metrics and RefSt against all metrics
     for i in columns_plot:
