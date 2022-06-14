@@ -21,7 +21,7 @@ def plot_sensor_data(new_PR_data_inner):
         'RefSt'].std()
 
     # SCATTER PLOT LOW COST SENSOR O3 AGAINST REFST but now normalized data
-    normalized_plt = new_PR_data_inner.plot.scatter(x='Sensor_O3', y='RefSt', color='green')
+    normalized_plt = new_PR_data_inner.plot.scatter(x='Sensor_O3_norm', y='RefSt_norm', color='green')
     normalized_plt.set_xlabel("Sensor_O3 normalized")
     normalized_plt.set_ylabel("RefSt normalized")
     plt.show()

@@ -12,6 +12,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
+# Packages for Ridge Regression
+from sklearn.linear_model import Ridge
+
 
 def normalize_data(data):
     return (data - data.mean()) / \
@@ -27,10 +30,10 @@ def forward_subset_selection(X_train, y_train, n_features=3):
     lreg = LinearRegression()
 
     # FORWARD by R2
-    sfs_r2 = sfs(lreg, k_features=n_features, forward=True, verbose=2, scoring='r2').fit(X_train, y_train)
-    sfs_mae = sfs(lreg, k_features=n_features, forward=True, verbose=2, scoring='neg_mean_absolute_error').fit(X_train,
+    sfs_r2 = sfs(lreg, k_features=n_features, forward=True, scoring='r2').fit(X_train, y_train)
+    sfs_mae = sfs(lreg, k_features=n_features, forward=True, scoring='neg_mean_absolute_error').fit(X_train,
                                                                                                                y_train)
-    sfs_mse = sfs(lreg, k_features=n_features, forward=True, verbose=2, scoring='neg_mean_squared_error').fit(X_train,
+    sfs_mse = sfs(lreg, k_features=n_features, forward=True, scoring='neg_mean_squared_error').fit(X_train,
                                                                                                               y_train)
 
     feat_names = list(sfs_r2.k_feature_names_)
@@ -44,6 +47,7 @@ def forward_subset_selection(X_train, y_train, n_features=3):
 
 
 if __name__ == "__main__":
+    ####### EXERCISE 1 #######
     # CLEAN data before plotting (I.E. dates to datetime, big numbers to numeric)
     new_PR_data_inner['date'] = pd.to_datetime(new_PR_data_inner['date'], format='%Y-%m-%d %H:%M:%S')
     new_PR_data_inner['date'] = new_PR_data_inner['date'].map(lambda x: datetime.strptime(str(x), '%Y-%m-%d %H:%M:%S'))
@@ -53,23 +57,64 @@ if __name__ == "__main__":
     # Create all the plots
     plots.plot_sensor_data(new_PR_data_inner)
 
+    ####### EXERCISE 2 #######
+
     # Check if the elements in the dataframes are null
     check_if_null_elements(new_PR_data_inner)
 
-    X = new_PR_data_inner.drop(['date', 'RefSt'], axis=1)
+    X = new_PR_data_inner.drop(['date', 'RefSt', 'Sensor_O3_norm', 'RefSt_norm'], axis=1)
     y = new_PR_data_inner['RefSt']
 
-    # Split the data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1, shuffle=False)
 
-
+    # MAKE THE SUBSET SELECTION FORWARD
     best_features = forward_subset_selection(X, y, 3)  # new_PR_data_inner (dataframe), best n_features to return (list)
+    print("\n")
+    print(best_features)
 
     # Normalize all the best features
     normalized = normalize_data(new_PR_data_inner[best_features[:]])
 
+    #Copy all the best features in a new dataframe
+    # Split the data
+    X_train, X_test, y_train, y_test = train_test_split(normalized, y, test_size=0.3, random_state=1, shuffle=False)
 
-    # MAKE THE SUBSET SELECTION FORWARD
-    # best_features = forward_subset_selection(new_PR_data_inner, 3)
-    print("\n")
-    print(best_features)
+    # Calculate ridge regression with the features selected
+    regression_model = LinearRegression().fit(X_train, y_train)
+
+
+    ridge_model = Ridge(alpha=0.1).fit(X_train, y_train)
+    print("Ridge model coef {}".format(ridge_model.coef_))
+    ridge_model1 = Ridge(alpha=1).fit(X_train, y_train)
+    ridge_model5 = Ridge(alpha=5).fit(X_train, y_train)
+    ridge_model10 = Ridge(alpha=10).fit(X_train, y_train)
+
+    plt.plot(ridge_model.coef_[0], "s", label="Ridge alpha 0.3")
+    plt.plot(ridge_model1.coef_[0], "^", label="Ridge alpha 1")
+    plt.plot(ridge_model5.coef_[0], "v", label="Ridge alpha 5")
+    plt.plot(ridge_model10.coef_[0], "o", label="Ridge alpha 10")
+    plt.plot(regression_model.coef_[0], "o", label="Linear")
+    plt.xlabel("Coefficient index")
+    plt.ylabel("Coefficient magnitude")
+    plt.hlines(0, 0, regression_model.coef_[0].itemsize)
+    plt.ylim(-1, 1)
+    plt.legend()
+    plt.show()
+
+    print("***********************")
+    print("RIDGE SCORE ALPHA 0.1")
+    print(ridge_model.score(X_train, y_train))
+    print(ridge_model.score(X_test, y_test))
+    print("***********************")
+    print("RIDGE SCORE ALPHA 1")
+    print(ridge_model1.score(X_train, y_train))
+    print(ridge_model1.score(X_test, y_test))
+    print("***********************")
+    print("RIDGE SCORE ALPHA 5")
+    print(ridge_model5.score(X_train, y_train))
+    print(ridge_model5.score(X_test, y_test))
+    print("***********************")
+    print("RIDGE SCORE ALPHA 10")
+    print(ridge_model10.score(X_train, y_train))
+    print(ridge_model10.score(X_test, y_test))
+
+
