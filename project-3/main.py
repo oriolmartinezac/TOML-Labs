@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import numpy as np
 import plots
+from tabulate import tabulate
 
 # Packages to do forward_subset_selection
 import pandas as pd
@@ -74,17 +75,24 @@ if __name__ == "__main__":
     # Calculate ridge regression with the features selected
     ridge_model = linear_model.Ridge()
 
-    n_alphas = 200
-    alphas = np.linspace(1, 250, num=50, dtype=int)
+    n_alphas = 50
+    alphas = np.linspace(1, 250, num=n_alphas, dtype=int)
     coefs = []
     errors_rmse = []
     errors_R2 = []
     errors_mae = []
+    alphas_list = []
+
+    # Initialize the table for the metrics
+
+    # table = [["Alpha values", "R²", "RMSE", "MAE"]]
 
     for a in alphas:
-        print("ALPHA VALUE: ", a)
+        alphas_list.append(a)
         ridge_model.set_params(alpha=a)
         ridge_model.fit(X_train, y_train)
+
+        print("ALPHA VALUE: ", a)
         coefs.append(ridge_model.coef_)
         print("COEF: ", ridge_model.coef_)
         pred_ridge_model = ridge_model.predict(X_test)
@@ -94,6 +102,12 @@ if __name__ == "__main__":
         errors_rmse.append(metrics.mean_squared_error(y_test, pred_ridge_model, squared=False))
         print("MAE: ", metrics.mean_absolute_error(y_test, pred_ridge_model))
         errors_mae.append(metrics.mean_absolute_error(y_test, pred_ridge_model))
+
+    # Create the table and save it to a file
+    table = {'Alpha Values': alphas_list, 'R²': errors_R2, 'RMSE': errors_rmse, 'MAE': errors_mae}
+    with open('./tables/table_ridge_regression.txt', 'w') as f:
+        f.write(tabulate(table, headers='keys', tablefmt='fancy_grid'))
+
 
     ax = plt.gca()
     ax.plot(alphas, coefs)
@@ -119,3 +133,7 @@ if __name__ == "__main__":
     plt.ylabel('Error')
     plt.plot(alphas[0:10], all_errors[0:10], color='blue')
     plt.show()
+
+    # Plot estimated O3 against date O3 reference data
+
+
