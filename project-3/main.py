@@ -18,6 +18,15 @@ from sklearn import metrics
 from sklearn.datasets import make_regression
 
 
+def table_creation(headers, data, file):
+    table = {}
+    for i, h in enumerate(headers):
+        table.update({h: data[i]})
+    with open('./tables/' + file, 'w') as file:
+        file.write(tabulate(table, headers='keys', tablefmt='fancy_grid'))
+    return True
+
+
 def normalize_data(data):
     return (data - data.mean()) / \
            data.std()
@@ -81,14 +90,8 @@ if __name__ == "__main__":
     errors_rmse = []
     errors_R2 = []
     errors_mae = []
-    alphas_list = []
-
-    # Initialize the table for the metrics
-
-    # table = [["Alpha values", "R²", "RMSE", "MAE"]]
 
     for a in alphas:
-        alphas_list.append(a)
         ridge_model.set_params(alpha=a)
         ridge_model.fit(X_train, y_train)
 
@@ -104,10 +107,8 @@ if __name__ == "__main__":
         errors_mae.append(metrics.mean_absolute_error(y_test, pred_ridge_model))
 
     # Create the table and save it to a file
-    table = {'Alpha Values': alphas_list, 'R²': errors_R2, 'RMSE': errors_rmse, 'MAE': errors_mae}
-    with open('./tables/table_ridge_regression.txt', 'w') as f:
-        f.write(tabulate(table, headers='keys', tablefmt='fancy_grid'))
-
+    table_creation(['Alpha Values', 'R²', 'RMSE', 'MAE'], [alphas, errors_R2, errors_rmse, errors_mae],
+                   'table_ridge_regression.txt')  # Parameters: headers (list), data (list), file (string)
 
     ax = plt.gca()
     ax.plot(alphas, coefs)
@@ -135,5 +136,3 @@ if __name__ == "__main__":
     plt.show()
 
     # Plot estimated O3 against date O3 reference data
-
-
