@@ -13,17 +13,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
 # Packages for Ridge Regression
-from sklearn.linear_model import Ridge
+from sklearn import linear_model
+from sklearn import metrics
+from sklearn.datasets import make_regression
 
 
 def normalize_data(data):
     return (data - data.mean()) / \
            data.std()
-
-
-def check_if_null_elements(data):
-    data.isnull().sum()
-
 
 def forward_subset_selection(X_train, y_train, n_features=3):
     # Check if missing values for the data
@@ -59,30 +56,54 @@ if __name__ == "__main__":
 
     ####### EXERCISE 2 #######
 
-    # Check if the elements in the dataframes are null
-    check_if_null_elements(new_PR_data_inner)
+    # Normalize all data
+    normalized = normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:-2]])
 
-    X = new_PR_data_inner.drop(['date', 'RefSt', 'Sensor_O3_norm', 'RefSt_norm'], axis=1)
-    y = new_PR_data_inner['RefSt']
+    X = normalized.drop(['RefSt'], axis=1)
+    y = normalized['RefSt']
 
+    # Split the data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
     # MAKE THE SUBSET SELECTION FORWARD
-    best_features = forward_subset_selection(X, y, 3)  # new_PR_data_inner (dataframe), best n_features to return (list)
+    best_features = forward_subset_selection(X_train, y_train, 3)  # new_PR_data_inner (dataframe), best n_features to return (list)
     print("\n")
     print(best_features)
 
-    # Normalize all the best features
-    normalized = normalize_data(new_PR_data_inner[best_features[:]])
-
     #Copy all the best features in a new dataframe
-    # Split the data
-    X_train, X_test, y_train, y_test = train_test_split(normalized, y, test_size=0.3, random_state=1, shuffle=False)
 
     # Calculate ridge regression with the features selected
     regression_model = LinearRegression().fit(X_train, y_train)
 
+    ridge_model = linear_model.Ridge()
 
-    ridge_model = Ridge(alpha=0.1).fit(X_train, y_train)
+    n_alphas = 200
+    alphas = np.linspace(1, 100, num=20, dtype=int)
+    coefs = []
+    errors = []
+
+    for a in alphas:
+        ridge_model.set_params(alpha=a)
+        ridge_model.fit(X_train, y_train)
+        coefs.append(ridge_model.coef_)
+        pred_ridge_model = ridge_model.predict(X_test)
+        print("ALPHA VALUE: ", a)
+        print("R²:", metrics.r2_score(y_test, pred_ridge_model))
+        print("RMSE: ", metrics.mean_squared_error(y_test, pred_ridge_model, squared=True))
+        print("MAE: ", metrics.mean_absolute_error(y_test, pred_ridge_model))
+
+
+    ax = plt.gca()
+    ax.plot(alphas, coefs)
+    ax.set_xscale('log')
+    plt.axis('tight')
+    plt.xlabel('alpha')
+    plt.ylabel('weights')
+
+    plt.show()
+
+    exit()
+    """ridge_model = Ridge(alpha=0.1).fit(X_train, y_train)
     print("Ridge model coef {}".format(ridge_model.coef_))
     ridge_model1 = Ridge(alpha=1).fit(X_train, y_train)
     ridge_model5 = Ridge(alpha=5).fit(X_train, y_train)
@@ -115,6 +136,6 @@ if __name__ == "__main__":
     print("***********************")
     print("RIDGE SCORE ALPHA 10")
     print(ridge_model10.score(X_train, y_train))
-    print(ridge_model10.score(X_test, y_test))
+    print(ridge_model10.score(X_test, y_test))"""
 
 

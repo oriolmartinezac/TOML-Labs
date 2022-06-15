@@ -26,7 +26,7 @@ def plot_sensor_data(new_PR_data_inner):
     normalized_plt.set_ylabel("RefSt normalized")
     plt.show()
 
-    columns_plot = new_PR_data_inner.columns[3:-3]  # Select only necessary columns
+    columns_plot = new_PR_data_inner.columns[3:-2]  # Select only necessary columns
 
     # PLOTS O3 against all metrics and RefSt against all metrics
     for i in columns_plot:
