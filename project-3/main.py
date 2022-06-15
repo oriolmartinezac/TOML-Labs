@@ -4,15 +4,14 @@ from datetime import datetime
 import numpy as np
 import plots
 
-# Packages for the for forward_subset_selection
+# Packages to do forward_subset_selection
 import pandas as pd
 from mlxtend.feature_selection import SequentialFeatureSelector as sfs
-from sklearn.linear_model import LinearRegression
 
+# Packages to do training and data split
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
 
-# Packages for Ridge Regression
+# Packages to do Ridge Regression
 from sklearn import linear_model
 from sklearn import metrics
 from sklearn.datasets import make_regression
@@ -22,16 +21,17 @@ def normalize_data(data):
     return (data - data.mean()) / \
            data.std()
 
+
 def forward_subset_selection(X_train, y_train, n_features=3):
     # Check if missing values for the data
-    lreg = LinearRegression()
+    lreg = linear_model.LinearRegression()
 
     # FORWARD by R2
     sfs_r2 = sfs(lreg, k_features=n_features, forward=True, scoring='r2').fit(X_train, y_train)
     sfs_mae = sfs(lreg, k_features=n_features, forward=True, scoring='neg_mean_absolute_error').fit(X_train,
-                                                                                                               y_train)
+                                                                                                    y_train)
     sfs_mse = sfs(lreg, k_features=n_features, forward=True, scoring='neg_mean_squared_error').fit(X_train,
-                                                                                                              y_train)
+                                                                                                   y_train)
 
     feat_names = list(sfs_r2.k_feature_names_)
 
@@ -66,7 +66,8 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
     # MAKE THE SUBSET SELECTION FORWARD
-    best_features = forward_subset_selection(X_train, y_train, 3)  # new_PR_data_inner (dataframe), best n_features to return (list)
+    best_features = forward_subset_selection(X_train, y_train,
+                                             3)  # new_PR_data_inner (dataframe), best n_features to return (list)
     print("\n")
     print(best_features)
 
