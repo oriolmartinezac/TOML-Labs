@@ -70,28 +70,29 @@ if __name__ == "__main__":
     print("\n")
     print(best_features)
 
-    #Copy all the best features in a new dataframe
-
     # Calculate ridge regression with the features selected
-    regression_model = LinearRegression().fit(X_train, y_train)
-
     ridge_model = linear_model.Ridge()
 
     n_alphas = 200
-    alphas = np.linspace(1, 100, num=20, dtype=int)
+    alphas = np.linspace(1, 250, num=50, dtype=int)
     coefs = []
-    errors = []
+    errors_rmse = []
+    errors_R2 = []
+    errors_mae = []
 
     for a in alphas:
+        print("ALPHA VALUE: ", a)
         ridge_model.set_params(alpha=a)
         ridge_model.fit(X_train, y_train)
         coefs.append(ridge_model.coef_)
+        print("COEF: ", ridge_model.coef_)
         pred_ridge_model = ridge_model.predict(X_test)
-        print("ALPHA VALUE: ", a)
         print("R²:", metrics.r2_score(y_test, pred_ridge_model))
-        print("RMSE: ", metrics.mean_squared_error(y_test, pred_ridge_model, squared=True))
+        errors_R2.append(metrics.r2_score(y_test, pred_ridge_model))
+        print("RMSE: ", metrics.mean_squared_error(y_test, pred_ridge_model, squared=False))
+        errors_rmse.append(metrics.mean_squared_error(y_test, pred_ridge_model, squared=False))
         print("MAE: ", metrics.mean_absolute_error(y_test, pred_ridge_model))
-
+        errors_mae.append(metrics.mean_absolute_error(y_test, pred_ridge_model))
 
     ax = plt.gca()
     ax.plot(alphas, coefs)
@@ -99,43 +100,21 @@ if __name__ == "__main__":
     plt.axis('tight')
     plt.xlabel('alpha')
     plt.ylabel('weights')
-
     plt.show()
 
-    exit()
-    """ridge_model = Ridge(alpha=0.1).fit(X_train, y_train)
-    print("Ridge model coef {}".format(ridge_model.coef_))
-    ridge_model1 = Ridge(alpha=1).fit(X_train, y_train)
-    ridge_model5 = Ridge(alpha=5).fit(X_train, y_train)
-    ridge_model10 = Ridge(alpha=10).fit(X_train, y_train)
+    zipped_errors = zip(errors_R2, errors_rmse, errors_mae)
+    all_errors = [x + y + z for (x, y, z) in zipped_errors]
 
-    plt.plot(ridge_model.coef_[0], "s", label="Ridge alpha 0.3")
-    plt.plot(ridge_model1.coef_[0], "^", label="Ridge alpha 1")
-    plt.plot(ridge_model5.coef_[0], "v", label="Ridge alpha 5")
-    plt.plot(ridge_model10.coef_[0], "o", label="Ridge alpha 10")
-    plt.plot(regression_model.coef_[0], "o", label="Linear")
-    plt.xlabel("Coefficient index")
-    plt.ylabel("Coefficient magnitude")
-    plt.hlines(0, 0, regression_model.coef_[0].itemsize)
-    plt.ylim(-1, 1)
-    plt.legend()
+    plt.title("Root Mean Sqare Error (black),  Mean Absolute Error (green), R² (red)")
+    plt.xlabel('Different alphas')
+    plt.ylabel('Error')
+    plt.plot(alphas, errors_rmse, color='black')
+    plt.plot(alphas, errors_mae, color='green')
+    plt.plot(alphas, errors_R2, color='red')
     plt.show()
 
-    print("***********************")
-    print("RIDGE SCORE ALPHA 0.1")
-    print(ridge_model.score(X_train, y_train))
-    print(ridge_model.score(X_test, y_test))
-    print("***********************")
-    print("RIDGE SCORE ALPHA 1")
-    print(ridge_model1.score(X_train, y_train))
-    print(ridge_model1.score(X_test, y_test))
-    print("***********************")
-    print("RIDGE SCORE ALPHA 5")
-    print(ridge_model5.score(X_train, y_train))
-    print(ridge_model5.score(X_test, y_test))
-    print("***********************")
-    print("RIDGE SCORE ALPHA 10")
-    print(ridge_model10.score(X_train, y_train))
-    print(ridge_model10.score(X_test, y_test))"""
-
-
+    plt.title("All the error metrics (blue)")
+    plt.xlabel('Different alphas')
+    plt.ylabel('Error')
+    plt.plot(alphas[0:10], all_errors[0:10], color='blue')
+    plt.show()
