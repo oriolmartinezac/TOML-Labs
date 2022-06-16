@@ -120,11 +120,13 @@ if __name__ == "__main__":
         print("MAE: ", metrics.mean_absolute_error(y_test, pred_ridge_model))
         errors_mae.append(metrics.mean_absolute_error(y_test, pred_ridge_model))
         pred_test['Ridge_Pred'] = ridge_model.intercept_ + ridge_model.coef_[0] * X_test['Sensor_O3'] + ridge_model.coef_[1] * X_test['Temp'] + ridge_model.coef_[2] * X_test['RelHum'] + ridge_model.coef_[3] * X_test['Sensor_NO2'] + ridge_model.coef_[4] * X_test['Sensor_NO'] + ridge_model.coef_[5] * X_test['Sensor_SO2']
-        #pred_test.plot.scatter(x="RefSt", y="Sensor_O3")
+
         ax = pred_test.plot(x='date', y='RefSt')
-        pred_test.plot(x='date', y='Ridge_Pred', ax=ax)
+        pred_test.plot(x='date', y='Ridge_Pred', ax=ax, title='Ridge Regression with alpha=' + str(a))
         plt.show()
-        sns_p = sns.lmplot(x='RefSt', y='Ridge_Pred', data=pred_test, fit_reg=True, line_kws={'color': 'orange'})
+        sns_p = sns.lmplot(x='RefSt', y='Ridge_Pred', data=pred_test, fit_reg=True, line_kws={'color': 'orange'}).set(title = 'Ridge Regression with alpha=' + str(a))
+        sns_p.set(ylim=(-2, 3))
+        sns_p.set(xlim=(-2, 3))
         plt.show()
 
 
