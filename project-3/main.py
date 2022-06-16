@@ -5,7 +5,7 @@ import numpy as np
 import plots
 from tabulate import tabulate
 
-import seaborn as sns # for scatter plot
+import seaborn as sns  # for scatter plot
 
 # Packages to do forward_subset_selection
 import pandas as pd
@@ -64,18 +64,19 @@ if __name__ == "__main__":
     new_PR_data_inner['Sensor_O3'] = pd.to_numeric(new_PR_data_inner['Sensor_O3'])
 
     # Create all the plots
-    plots.plot_sensor_data(new_PR_data_inner)
+    #plots.plot_sensor_data(new_PR_data_inner)
 
     ####### EXERCISE 2 #######
 
     # Normalize all data
-    normalized = normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:-2]])
+    #normalized = normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:-2]]) # WITH PLOTS
+    normalized = normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:]]) # NO PLOTS
 
     X = normalized.drop(['RefSt'], axis=1)
     y = normalized['RefSt']
 
     # Split the data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
 
     # MAKE THE SUBSET SELECTION FORWARD
     best_features = forward_subset_selection(X_train, y_train,
@@ -84,16 +85,12 @@ if __name__ == "__main__":
     print("\n")
     print(best_features)
 
-    X = X[best_features[:]]
-
-    # Split the data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
-
     # Calculate ridge regression with the features selected
     ridge_model = linear_model.Ridge()
 
     n_alphas = 50
-    alphas = np.linspace(1, 250, num=n_alphas, dtype=int)
+    #alphas = np.linspace(1, 250, num=n_alphas, dtype=int)
+    alphas = [1, 5, 10, 100, 500, 1000, 1000000]
     coefs = []
     errors_rmse = []
     errors_R2 = []
@@ -102,29 +99,35 @@ if __name__ == "__main__":
     intercepts = []
 
 
+
     for a in alphas:
         ridge_model.set_params(alpha=a)
         ridge_model.fit(X_train, y_train)
+        pred_test = pd.DataFrame()
+        pred_test['RefSt'] = y_test
 
         print("ALPHA VALUE: ", a)
         print("COEF: ", ridge_model.coef_)
         coefs.append(ridge_model.coef_)
         pred_ridge_model = ridge_model.predict(X_test)
         intercepts.append(ridge_model.intercept_)
-        if a == 1 or a == 6 or a == 102:
-            predictions.append(ridge_model.intercept_ + ridge_model.coef_[0]*X_test['Sensor_O3'] + ridge_model.coef_[1]*X_test['Temp'] + ridge_model.coef_[2]*X_test['RelHum'])
+        predictions.append(ridge_model.intercept_ + ridge_model.coef_[0] * X_test[X_test.columns[0]] + ridge_model.coef_[1] * X_test[X_test.columns[1]] + ridge_model.coef_[3] * X_test[X_test.columns[3]] + ridge_model.coef_[4] * X_test[X_test.columns[4]] + ridge_model.coef_[5] * X_test[X_test.columns[5]])
         print("R²:", metrics.r2_score(y_test, pred_ridge_model))
         errors_R2.append(metrics.r2_score(y_test, pred_ridge_model))
         print("RMSE: ", metrics.mean_squared_error(y_test, pred_ridge_model, squared=False))
         errors_rmse.append(metrics.mean_squared_error(y_test, pred_ridge_model, squared=False))
         print("MAE: ", metrics.mean_absolute_error(y_test, pred_ridge_model))
         errors_mae.append(metrics.mean_absolute_error(y_test, pred_ridge_model))
+        pred_test['MLR_PRED'] = ridge_model.intercept_ + ridge_model.coef_[0] * X_test[X_test.columns[0]] + ridge_model.coef_[1] * X_test[X_test.columns[1]] + ridge_model.coef_[3] * X_test[X_test.columns[3]] + ridge_model.coef_[4] * X_test[X_test.columns[4]] + ridge_model.coef_[5] * X_test[X_test.columns[5]]
+        sns_p = sns.lmplot(x='RefSt', y='MLR_PRED', data=pred_test, fit_reg=True, line_kws={'color': 'orange'})
+        sns_p.set(ylim=(-3, 3))
+        sns_p.set(xlim=(-3, 5))
+        plt.show()
+
 
     # Create the table and save it to a file
     table_creation(['Alpha Values', 'R²', 'RMSE', 'MAE'], [alphas, errors_R2, errors_rmse, errors_mae],
                    'table_ridge_regression.txt')  # Parameters: headers (list), data (list), file (string)
-
-
 
     ax = plt.gca()
     ax.plot(alphas, coefs)
@@ -132,10 +135,8 @@ if __name__ == "__main__":
     plt.axis('tight')
     plt.xlabel('alpha')
     plt.ylabel('weights')
+    plt.legend(['Sensor O3', 'Temp', 'RelHum', 'Sensor_NO2', 'Sensor_NO', 'Sensor_SO2'])
     plt.show()
-
-    zipped_errors = zip(errors_R2, errors_rmse, errors_mae)
-    all_errors = [x + y + z for (x, y, z) in zipped_errors]
 
     plt.title("Root Mean Sqare Error (black),  Mean Absolute Error (green), R² (red)")
     plt.xlabel('Different alphas')
@@ -145,26 +146,19 @@ if __name__ == "__main__":
     plt.plot(alphas, errors_R2, color='red')
     plt.show()
 
-    plt.title("All the error metrics (blue)")
-    plt.xlabel('Different alphas')
-    plt.ylabel('Error')
-    plt.plot(alphas[0:10], all_errors[0:10], color='blue')
-    plt.show()
-
+    pred_test = pd.DataFrame()
+    pred_test['RefSt'] = y_test
+    """
     for p in predictions:
-        pred_test = pd.DataFrame()
-        pred_test['RefSt'] = y_test
-        pred_test['Ridge_Pred'] = p
-        pred_test['date'] = new_PR_data_inner['date']
-        # Plot estimated O3 against date O3 reference data
-        plt.title("MLR against RefSt")
-        plt.xlabel("date")
-        pred_test[['RefSt', 'Ridge_Pred']].plot()
-        plt.xticks(rotation=20)
+        # SCATTER PLOT LOW COST SENSOR O3 AGAINST REFST
 
-        sns.lmplot(x='RefSt', y='Ridge_Pred', data=pred_test, fit_reg=True, line_kws={'color': 'orange'})
-        """ax_ref = new_PR_data_inner.plot(x='date', y='RefSt')
-        ax_o3 = new_PR_data_inner.plot(x='date', y='Sensor_O3', ax=ax_ref)
-        plt.plot(x=new_PR_data_inner['date'], y=predictions, ax=ax_o3)"""
-        plt.show()
-        del pred_test
+        pred_test['MLR_PRED'] = p
+        pred_test['Sensor_O3'] = new_PR_data_inner['Sensor_O3']
+        #ax = new_PR_data_inner.plot.scatter(x='Sensor_O3', y='RefSt', color='green')
+
+        #plt.plot( , p, ax=ax)
+
+        sns_p = sns.lmplot(x='RefSt', y='MLR_PRED', data=pred_test, fit_reg=True, line_kws={'color': 'orange'})
+        sns_p.set(ylim=(-3, 3))
+        sns_p.set(xlim=(-3, 5))
+        plt.show()"""
