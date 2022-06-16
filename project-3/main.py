@@ -5,6 +5,8 @@ import numpy as np
 import plots
 from tabulate import tabulate
 
+import seaborn as sns # for scatter plot
+
 # Packages to do forward_subset_selection
 import pandas as pd
 from mlxtend.feature_selection import SequentialFeatureSelector as sfs
@@ -78,8 +80,14 @@ if __name__ == "__main__":
     # MAKE THE SUBSET SELECTION FORWARD
     best_features = forward_subset_selection(X_train, y_train,
                                              3)  # new_PR_data_inner (dataframe), best n_features to return (list)
+
     print("\n")
     print(best_features)
+
+    X = X[best_features[:]]
+
+    # Split the data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
     # Calculate ridge regression with the features selected
     ridge_model = linear_model.Ridge()
@@ -90,15 +98,21 @@ if __name__ == "__main__":
     errors_rmse = []
     errors_R2 = []
     errors_mae = []
+    predictions = []
+    intercepts = []
+
 
     for a in alphas:
         ridge_model.set_params(alpha=a)
         ridge_model.fit(X_train, y_train)
 
         print("ALPHA VALUE: ", a)
-        coefs.append(ridge_model.coef_)
         print("COEF: ", ridge_model.coef_)
+        coefs.append(ridge_model.coef_)
         pred_ridge_model = ridge_model.predict(X_test)
+        intercepts.append(ridge_model.intercept_)
+        if a == 1 or a == 6 or a == 102:
+            predictions.append(ridge_model.intercept_ + ridge_model.coef_[0]*X_test['Sensor_O3'] + ridge_model.coef_[1]*X_test['Temp'] + ridge_model.coef_[2]*X_test['RelHum'])
         print("R²:", metrics.r2_score(y_test, pred_ridge_model))
         errors_R2.append(metrics.r2_score(y_test, pred_ridge_model))
         print("RMSE: ", metrics.mean_squared_error(y_test, pred_ridge_model, squared=False))
@@ -109,6 +123,8 @@ if __name__ == "__main__":
     # Create the table and save it to a file
     table_creation(['Alpha Values', 'R²', 'RMSE', 'MAE'], [alphas, errors_R2, errors_rmse, errors_mae],
                    'table_ridge_regression.txt')  # Parameters: headers (list), data (list), file (string)
+
+
 
     ax = plt.gca()
     ax.plot(alphas, coefs)
@@ -135,4 +151,20 @@ if __name__ == "__main__":
     plt.plot(alphas[0:10], all_errors[0:10], color='blue')
     plt.show()
 
-    # Plot estimated O3 against date O3 reference data
+    for p in predictions:
+        pred_test = pd.DataFrame()
+        pred_test['RefSt'] = y_test
+        pred_test['Ridge_Pred'] = p
+        pred_test['date'] = new_PR_data_inner['date']
+        # Plot estimated O3 against date O3 reference data
+        plt.title("MLR against RefSt")
+        plt.xlabel("date")
+        pred_test[['RefSt', 'Ridge_Pred']].plot()
+        plt.xticks(rotation=20)
+
+        sns.lmplot(x='RefSt', y='Ridge_Pred', data=pred_test, fit_reg=True, line_kws={'color': 'orange'})
+        """ax_ref = new_PR_data_inner.plot(x='date', y='RefSt')
+        ax_o3 = new_PR_data_inner.plot(x='date', y='Sensor_O3', ax=ax_ref)
+        plt.plot(x=new_PR_data_inner['date'], y=predictions, ax=ax_o3)"""
+        plt.show()
+        del pred_test
