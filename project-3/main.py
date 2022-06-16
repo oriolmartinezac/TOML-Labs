@@ -58,8 +58,8 @@ def forward_subset_selection(X_train, y_train, n_features=3):
 if __name__ == "__main__":
     ####### EXERCISE 1 #######
     # CLEAN data before plotting (I.E. dates to datetime, big numbers to numeric)
-    new_PR_data_inner['date'] = pd.to_datetime(new_PR_data_inner['date'], format='%Y-%m-%d %H:%M:%S')
-    new_PR_data_inner['date'] = new_PR_data_inner['date'].map(lambda x: datetime.strptime(str(x), '%Y-%m-%d %H:%M:%S'))
+    #new_PR_data_inner['date'] = pd.to_datetime(new_PR_data_inner['date'], format='%Y-%m-%d %H:%M:%S')
+    #new_PR_data_inner['date'] = new_PR_data_inner['date'].map(lambda x: datetime.strptime(str(x), '%Y-%m-%d %H:%M:%S'))
     new_PR_data_inner['Sensor_O3'] = new_PR_data_inner['Sensor_O3'].str.replace(".", "", regex=True).astype(float)
     new_PR_data_inner['Sensor_O3'] = pd.to_numeric(new_PR_data_inner['Sensor_O3'])
 
@@ -98,13 +98,14 @@ if __name__ == "__main__":
     predictions = []
     intercepts = []
 
-
+    pred_test = pd.DataFrame()
+    pred_test['RefSt'] = y_test
+    pred_test['Sensor_O3'] = X_test['Sensor_O3']
+    pred_test['date'] = new_PR_data_inner['date']
 
     for a in alphas:
         ridge_model.set_params(alpha=a)
         ridge_model.fit(X_train, y_train)
-        pred_test = pd.DataFrame()
-        pred_test['RefSt'] = y_test
 
         print("ALPHA VALUE: ", a)
         print("COEF: ", ridge_model.coef_)
@@ -118,10 +119,12 @@ if __name__ == "__main__":
         errors_rmse.append(metrics.mean_squared_error(y_test, pred_ridge_model, squared=False))
         print("MAE: ", metrics.mean_absolute_error(y_test, pred_ridge_model))
         errors_mae.append(metrics.mean_absolute_error(y_test, pred_ridge_model))
-        pred_test['MLR_PRED'] = ridge_model.intercept_ + ridge_model.coef_[0] * X_test[X_test.columns[0]] + ridge_model.coef_[1] * X_test[X_test.columns[1]] + ridge_model.coef_[3] * X_test[X_test.columns[3]] + ridge_model.coef_[4] * X_test[X_test.columns[4]] + ridge_model.coef_[5] * X_test[X_test.columns[5]]
-        sns_p = sns.lmplot(x='RefSt', y='MLR_PRED', data=pred_test, fit_reg=True, line_kws={'color': 'orange'})
-        sns_p.set(ylim=(-3, 3))
-        sns_p.set(xlim=(-3, 5))
+        pred_test['Ridge_Pred'] = ridge_model.intercept_ + ridge_model.coef_[0] * X_test['Sensor_O3'] + ridge_model.coef_[1] * X_test['Temp'] + ridge_model.coef_[2] * X_test['RelHum'] + ridge_model.coef_[3] * X_test['Sensor_NO2'] + ridge_model.coef_[4] * X_test['Sensor_NO'] + ridge_model.coef_[5] * X_test['Sensor_SO2']
+        #pred_test.plot.scatter(x="RefSt", y="Sensor_O3")
+        ax = pred_test.plot(x='date', y='RefSt')
+        pred_test.plot(x='date', y='Ridge_Pred', ax=ax)
+        plt.show()
+        sns_p = sns.lmplot(x='RefSt', y='Ridge_Pred', data=pred_test, fit_reg=True, line_kws={'color': 'orange'})
         plt.show()
 
 
