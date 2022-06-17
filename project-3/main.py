@@ -1,8 +1,9 @@
 from MLR_Build_File_Pandas_HW3 import *  # IMPORTING HEADER FILE
 import matplotlib.pyplot as plt
 import matplotlib as mlp
+
 mlp.rcParams.update({'figure.max_open_warning': 0})
-plt.rcParams["figure.figsize"] = (20, 15)
+plt.rcParams["figure.figsize"] = (15, 10)
 from datetime import datetime
 import numpy as np
 import plots
@@ -26,8 +27,6 @@ from sklearn.linear_model import RidgeCV
 
 # Packages to do Kernel Ridge Regression
 from sklearn.kernel_ridge import KernelRidge
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.gaussian_process import GaussianProcessRegressor
 
 
 def table_creation(headers, data, file):
@@ -86,7 +85,7 @@ if __name__ == "__main__":
     y = normalized['RefSt']
 
     # Split the data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     # MAKE THE SUBSET SELECTION FORWARD
     best_features = forward_subset_selection(X_train, y_train,
@@ -103,7 +102,7 @@ if __name__ == "__main__":
 
     n_alphas = 50
     # alphas = np.linspace(1, 250, num=n_alphas, dtype=int)
-    alphas = [1, 5, 10, 100, 500, 1000, 10000]
+    alphas = [0.00001, 0.5, 1, 5, 10]
     coefs = []
     errors_rmse = []
     errors_R2 = []
@@ -178,6 +177,15 @@ if __name__ == "__main__":
     plt.savefig(path_ridge_regression_plots + str("error_metrics/all_errors.png"), bbox_inches='tight')
     plt.clf()
 
+    plt.plot(alphas, errors_rmse)
+    plt.show()
+
+    plt.plot(alphas, errors_mae)
+    plt.show()
+
+    plt.plot(alphas, errors_R2)
+    plt.show()
+
     errors_rmse.clear()
     errors_R2.clear()
     errors_mae.clear()
@@ -221,7 +229,8 @@ if __name__ == "__main__":
         ax = pred_test.plot(x='date', y='RefSt')
         pred_test.plot(x='date', y='Kernel_Poly_Pred', ax=ax,
                        title='Polynomial Kernel Ridge Regression with degree=' + str(d))
-        plt.savefig(path_kernel_ridge_regression_plots + str("models/kernel_poly_model_d-" + str(d) + ".png"), bbox_inches='tight')
+        plt.savefig(path_kernel_ridge_regression_plots + str("models/kernel_poly_model_d-" + str(d) + ".png"),
+                    bbox_inches='tight')
         plt.clf()
 
     kr_stats = pd.DataFrame({'degree': degree, 'r_squared': errors_R2, 'rmse': errors_rmse, 'mae': errors_mae})
@@ -244,7 +253,32 @@ if __name__ == "__main__":
                    [degree, errors_R2, errors_rmse, errors_mae],
                    'kernel_ridge_regression_poly.txt')  # Parameters: headers (list), data (list), file (string)
 
-    """kernel_rbf = RBF([1.0] * len(X_train.columns))
-    gpr = GaussianProcessRegressor(kernel=kernel_rbf).fit(X_train, y_train)
+    # GAUSSIAN KERNEL FUNCTION
+    errors_rmse.clear()
+    errors_R2.clear()
+    errors_mae.clear()
 
-    print("KERNEL")"""
+    kernel_rbf = KernelRidge(kernel="rbf").fit(new_X_train, y_train)
+
+    pred_kernel_gauss_model = kernel_rbf.predict(new_X_test)
+    print("R²:", metrics.r2_score(y_test, pred_kernel_gauss_model))
+    errors_R2.append(metrics.r2_score(y_test, pred_kernel_gauss_model))
+    print("RMSE: ", metrics.mean_squared_error(y_test, pred_kernel_gauss_model, squared=False))
+    errors_rmse.append(metrics.mean_squared_error(y_test, pred_kernel_gauss_model, squared=False))
+    print("MAE: ", metrics.mean_absolute_error(y_test, pred_kernel_gauss_model))
+    errors_mae.append(metrics.mean_absolute_error(y_test, pred_kernel_gauss_model))
+    pred_test['Kernel_Gauss_Pred'] = pred_kernel_gauss_model
+
+    # Plot
+    ax = pred_test.plot(x='date', y='RefSt')
+    pred_test.plot(x='date', y='Kernel_Gauss_Pred', ax=ax,
+                   title='Gaussian Kernel Ridge Regression')
+    plt.savefig(path_kernel_ridge_regression_plots + str("models/kernel_gauss_model.png"),
+                bbox_inches='tight')
+    plt.clf()
+
+    # Create the table and save it to a file
+    table_creation(['R²', 'RMSE', 'MAE'],
+                   [errors_R2, errors_rmse, errors_mae],
+                   'kernel_ridge_regression_gaussian.txt')  # Parameters: headers (list), data (list), file (string)
+
