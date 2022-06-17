@@ -223,7 +223,10 @@ if __name__ == "__main__":
         errors_rmse.append(metrics.mean_squared_error(y_test, pred_kernel_poly_model, squared=False))
         print("MAE: ", metrics.mean_absolute_error(y_test, pred_kernel_poly_model))
         errors_mae.append(metrics.mean_absolute_error(y_test, pred_kernel_poly_model))
-        pred_test['Kernel_Poly_Pred'] = pred_kernel_poly_model
+        if d == 7:  # Best degree for the kernel function
+            pred_test['Best_Kernel_Poly_Pred'] = pred_kernel_poly_model
+        else:
+            pred_test['Kernel_Poly_Pred'] = pred_kernel_poly_model
 
         # Plots
         ax = pred_test.plot(x='date', y='RefSt')
@@ -282,3 +285,11 @@ if __name__ == "__main__":
                    [errors_R2, errors_rmse, errors_mae],
                    'kernel_ridge_regression_gaussian.txt')  # Parameters: headers (list), data (list), file (string)
 
+    # Both plots
+    ax = pred_test.plot(x='date', y='RefSt')
+    ax2 = pred_test.plot(x='date', y='Kernel_Gauss_Pred', ax=ax)
+    pred_test.plot(x='date', y='Best_Kernel_Poly_Pred', ax=ax,
+                   title='Different')
+    plt.savefig(path_kernel_ridge_regression_plots + str("models/kernel_gauss_poly_model.png"),
+                bbox_inches='tight')
+    plt.clf()
