@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
     n_alphas = 50
     # alphas = np.linspace(1, 250, num=n_alphas, dtype=int)
-    alphas = [0.00001, 0.5, 1, 5, 10]
+    alphas = [0.00001, 0.5, 1, 5, 25, 100, 500, 10000]
     coefs = []
     errors_rmse = []
     errors_R2 = []
