@@ -209,7 +209,7 @@ for t in range(ITER):
   z2 = a1.dot(w2)
   a2 = np.maximum(z2, 0.1*z2)  # leaky ReLU
   z3 = a2.dot(w3)
-  y_pred = sigmoid(z3)  # Sigmoid"""
+  y_pred = sigmoid(zx3)  # Sigmoid"""
 
   """# New code
   a=0.01

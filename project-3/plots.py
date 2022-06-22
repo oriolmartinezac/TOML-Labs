@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 
-
 def plot_sensor_data(new_PR_data_inner):
     # PLOT raw data from Sensor_O3 against date
     new_PR_data_inner.plot(x='date', y='Sensor_O3')
