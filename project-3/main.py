@@ -39,13 +39,13 @@ if __name__ == "__main__":
     new_PR_data_inner['Sensor_O3'] = pd.to_numeric(new_PR_data_inner['Sensor_O3'])
 
     # Create all the plots
-    # plots.plot_sensor_data(new_PR_data_inner)
+    plots.plot_sensor_data(new_PR_data_inner)
 
     ####### EXERCISE 1 #######
 
     # Normalize all data
-    # normalized = normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:-2]]) # WITH PLOTS
-    normalized = utilities.normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:]])  # NO PLOTS
+    normalized = utilities.normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:-2]]) # WITH PLOTS
+    #normalized = utilities.normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:]])  # NO PLOTS
 
     X = normalized.drop(['RefSt'], axis=1)
     y = normalized['RefSt']

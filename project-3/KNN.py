@@ -12,6 +12,8 @@ import matplotlib as mpl
 
 mpl.rcParams['figure.figsize'] = (10, 6)
 
+path_k_nearest_neighbor_plots = "./images/k_nearest_neighbor/"
+
 
 def k_neighbors(x, y):
     # divide dataset
@@ -37,32 +39,32 @@ def k_neighbors(x, y):
         mae.append(mae_score.mean())
 
     rmse = [math.sqrt(1 - x) for x in mse]
-    mae = [-1*x for x in mae]
+    mae = [-1 * x for x in mae]
     print(r2)
     print(rmse)
     utilities.table_creation(['Number of neighbours', 'R^2', 'RMSE', 'MAE'], [n_neighbors, r2, rmse, mae],
-                         'knn_table.txt')
+                             'knn_table.txt')
 
     # plot errors
     plt.title("R-squared")
     plt.xlabel('Number of neighbors')
     plt.ylabel('R^2')
     plt.plot(n_neighbors, r2, color='red')
-    plt.savefig("img/knn_r2")
+    plt.savefig(path_k_nearest_neighbor_plots + "error_metrics/knn_r2.png")
     plt.clf()
 
     plt.title("Root Mean Squared Error")
     plt.xlabel('Number of neighbors')
     plt.ylabel('RMSE')
     plt.plot(n_neighbors, rmse, color='blue')
-    plt.savefig("img/knn_rmse")
+    plt.savefig(path_k_nearest_neighbor_plots + "error_metrics/knn_rmse.png")
     plt.clf()
 
     plt.title("Mean Absoulte Error")
     plt.xlabel('Number of neighbors')
     plt.ylabel('MAE')
     plt.plot(n_neighbors, mae, color='black')
-    plt.savefig("img/knn_mae")
+    plt.savefig(path_k_nearest_neighbor_plots + "error_metrics/knn_mae.png")
     plt.clf()
     # plt.show()
 
@@ -77,15 +79,15 @@ def k_neighbors(x, y):
     pred['Pred'] = mpred
 
     print("KNN PREDICTION")
-    print("R^2: ", str(r2_score(y_test, mpred)))
-    print("RMSE: ", str(mean_squared_error(y_test, mpred, squared=False)))
-    print("MAE: ", str(mean_absolute_error(y_test, mpred)))
-    print("Accuracy: ", str(acc*100))
+    print("R^2: ", r2_score(y_test, mpred))
+    print("RMSE: ", mean_squared_error(y_test, mpred, squared=False))
+    print("MAE: ", mean_absolute_error(y_test, mpred))
+    print("Accuracy: ", (acc * 100))
 
     ax1 = pred.plot(x='date', y='RefSt', color='red')
     pred.plot(x='date', y='Pred', ax=ax1, title='KNN for ' + str(best_n) + ' neighbors.', color='blue')
-    label = "KNN_" + str(best_n)
-    plt.savefig("img/" + label)
+    label = "KNN_" + str(best_n) + ".png"
+    plt.savefig(path_k_nearest_neighbor_plots + "models/" + label)
     plt.clf()
 
     # sns.set(rc={"figure.figsize": (12, 15)})
@@ -94,6 +96,6 @@ def k_neighbors(x, y):
     sns_rf.fig.suptitle('KNN for ' + str(best_n) + ' neighbors.')
     sns_rf.set(ylim=(-2, 3))
     sns_rf.set(xlim=(-2, 3))
-    label = "KNN_line_" + str(best_n)
-    plt.savefig("img/" + label)
+    label = "KNN_line_" + str(best_n) + ".png"
+    plt.savefig(path_k_nearest_neighbor_plots + "models/" + label)
     plt.clf()
