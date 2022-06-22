@@ -68,9 +68,9 @@ def forward_subset_selection(x, y, n_features=3):
     sns_rf.fig.suptitle('Forward subset selection ' + str(best_features) + ' features.')
     sns_rf.set(ylim=(-2, 3))
     sns_rf.set(xlim=(-2, 3))
-    plt.show()
+    #plt.show()
     plt.savefig(path_forward_selection_plots + "models/MLR_forward_line.png")
-    # plt.clf()
+    plt.clf()
 
 
 def ridge_regression(x, y):

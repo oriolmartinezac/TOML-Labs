@@ -1,6 +1,7 @@
 from MLR_Build_File_Pandas_HW3 import *  # IMPORTING HEADER FILE
 import matplotlib.pyplot as plt
 import matplotlib as mlp
+import seaborn as sns
 
 mlp.rcParams.update({'figure.max_open_warning': 0})
 plt.rcParams["figure.figsize"] = (15, 10)
@@ -41,12 +42,32 @@ if __name__ == "__main__":
     # Create all the plots
     plots.plot_sensor_data(new_PR_data_inner)
 
-    ####### EXERCISE 1 #######
-
     # Normalize all data
-    normalized = utilities.normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:-2]]) # WITH PLOTS
-    #normalized = utilities.normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:]])  # NO PLOTS
+    normalized = utilities.normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:-2]])  # WITH PLOTS
+    # normalized = utilities.normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:]])  # NO PLOTS
 
+    # Mean for each parameter
+    print("MEAN")
+    print(new_PR_data_inner.mean())
+
+    # Covariance matrix between all parameters
+    print("COVARIANCE")
+    pd.set_option('display.max_rows', 10)
+    pd.set_option('display.max_columns', 10)
+    pd.set_option('display.float_format', lambda x: '%.2f' % x)
+    print(normalized.cov())
+
+    #sns.heatmap(normalized.isnull(), cbar=False)
+
+    corr = normalized.corr()
+
+    sns.heatmap(corr,
+                xticklabels=corr.columns,
+                yticklabels=corr.columns, annot=True),
+
+    plt.show()
+
+    ####### EXERCISE 1 #######
     X = normalized.drop(['RefSt'], axis=1)
     y = normalized['RefSt']
 

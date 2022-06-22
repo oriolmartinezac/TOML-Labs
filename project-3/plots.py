@@ -2,23 +2,25 @@ import matplotlib.pyplot as plt
 
 path_all_metrics_plots = "./images/all_metrics/"
 
+
 def plot_sensor_data(new_PR_data_inner):
     # PLOT raw data from Sensor_O3 against date
     new_PR_data_inner.plot(x='date', y='Sensor_O3')
     plt.savefig(path_all_metrics_plots + "sensor-o3_date.png")
-    #plt.show()
+    # plt.show()
     plt.clf()
 
     # PLOT Refst from expensive Sensor_O3 against date
     new_PR_data_inner.plot(x='date', y='RefSt', color='red')
     plt.savefig(path_all_metrics_plots + "refst_date.png")
-    #plt.show()
+    # plt.show()
     plt.clf()
 
     # SCATTER PLOT LOW COST SENSOR O3 AGAINST REFST
     new_PR_data_inner.plot.scatter(x='Sensor_O3', y='RefSt', color='green')
+    plt.title("O3 sensor data vs O3 ref station data")
     plt.savefig(path_all_metrics_plots + "sensor-o3_refst.png")
-    #plt.show()
+    # plt.show()
     plt.clf()
 
     # Normalize the data
@@ -32,8 +34,10 @@ def plot_sensor_data(new_PR_data_inner):
     normalized_plt = new_PR_data_inner.plot.scatter(x='Sensor_O3_norm', y='RefSt_norm', color='green')
     normalized_plt.set_xlabel("Sensor_O3 normalized")
     normalized_plt.set_ylabel("RefSt normalized")
+    plt.title("Normalized O3 sensor data vs normalized O3 ref station data")
+    plt.axline([0, 0], [1, 1], color='blue', linestyle="--")
     plt.savefig(path_all_metrics_plots + "norm_sensor-o3_refst.png")
-    #plt.show()
+    # plt.show()
     plt.clf()
 
     columns_plot = new_PR_data_inner.columns[3:-2]  # Select only necessary columns
@@ -41,12 +45,14 @@ def plot_sensor_data(new_PR_data_inner):
     # PLOTS O3 against all metrics and RefSt against all metrics
     for i in columns_plot:
         new_PR_data_inner.plot.scatter(x='Sensor_O3', y=i)
-        #plt.show()
+        # plt.show()
+        plt.title("O3 sensor data vs " +str(i))
         plt.savefig(path_all_metrics_plots + "sensor-o3_" + i + ".png")
         plt.clf()
 
     for i in columns_plot:
         new_PR_data_inner.plot.scatter(x='RefSt', y=i, color='red')
+        plt.title("O3 RefSt  vs " + str(i))
         plt.savefig(path_all_metrics_plots + "refst_" + i + ".png")
-        #plt.show()
+        # plt.show()
         plt.clf()
