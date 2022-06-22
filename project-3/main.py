@@ -24,10 +24,11 @@ import KR_RBF
 # Packages to do KNN
 import KNN
 
-#
+# Packages to do Random Forest
+import RF
 
 if __name__ == "__main__":
-    ####### EXERCISE 1 #######
+    ####### PRE-EXERCISE 1 #######
     # CLEAN data before plotting (I.E. dates to datetime, big numbers to numeric)
     # new_PR_data_inner['date'] = pd.to_datetime(new_PR_data_inner['date'], format='%Y-%m-%d %H:%M:%S')
     # new_PR_data_inner['date'] = new_PR_data_inner['date'].map(lambda x: datetime.strptime(str(x), '%Y-%m-%d %H:%M:%S'))
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     # Create all the plots
     # plots.plot_sensor_data(new_PR_data_inner)
 
-    ####### EXERCISE 2 #######
+    ####### EXERCISE 1 #######
 
     # Normalize all data
     # normalized = normalize_data(new_PR_data_inner[new_PR_data_inner.columns[1:-2]]) # WITH PLOTS
@@ -46,26 +47,30 @@ if __name__ == "__main__":
     X = normalized.drop(['RefSt'], axis=1)
     y = normalized['RefSt']
 
-    # Split the data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
-
     # MAKE THE SUBSET SELECTION FORWARD
-    MLR.forward_subset_selection(X_train, X_test, y_train, y_test, 3)
+    MLR.forward_subset_selection(X, y, 3)
+
+    ####### EXERCISE 3 #######
+    # Ridge Regression
+    MLR.ridge_regression(X, y)
+
+    # Lasso Regression
+    MLR.lasso_regression(X, y)
 
     ####### EXERCISE 3 #######
     # KNN
-    KNN.k_neighbors(X_train, X_test, y_train, y_test)
-
-
+    KNN.k_neighbors(X, y)
 
     ####### EXERCISE 4 #######
-    new_X_train = X_train[['Sensor_O3', 'Temp', 'RelHum']]
-    new_X_test = X_test[['Sensor_O3', 'Temp', 'RelHum']]
+    # new_X_train = X[['Sensor_O3', 'Temp', 'RelHum']]
+    # new_X_test = X_test[['Sensor_O3', 'Temp', 'RelHum']]
 
     # Kernel Ridge Regression (gaussian function)
-    KR_RBF.gaussian_kernel(new_X_train, new_X_test, y_train, y_test)
+    KR_RBF.gaussian_kernel(X, y)
 
+    ####### EXERCISE 5 #######
+    # Random Forest
+    RF.random_forest(X, y)
 
-
-
+    ####### EXERCISE 6 #######
 

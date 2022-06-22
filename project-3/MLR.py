@@ -1,6 +1,5 @@
 from MLR_Build_File_Pandas_HW3 import *  # IMPORTING HEADER FILE
 import pandas as pd
-# Packages to do Ridge Regression and Lasso Regression and Forward subset selection
 from sklearn import linear_model
 from sklearn.linear_model import RidgeCV
 from sklearn import metrics
@@ -9,10 +8,7 @@ import utilities
 import numpy as np
 import seaborn as sns  # for scatter plot
 from mlxtend.feature_selection import SequentialFeatureSelector as sfs
-
-
 from sklearn.model_selection import train_test_split
-
 
 # FORWARD SUBSET SELECTION path to plots
 path_forward_selection_plots = "./images/forward_subset_selection/"
@@ -23,7 +19,10 @@ path_ridge_regression_plots = "./images/ridge_regression/"
 # LASSO REGRESSION path to plot
 path_lasso_regression_plots = "./images/lasso_regression/"
 
-def forward_subset_selection(X_train, X_test, y_train, y_test, n_features=3):
+
+def forward_subset_selection(x, y, n_features=3):
+    # divide dataset
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=1)
 
     lreg = linear_model.LinearRegression()
 
@@ -61,7 +60,7 @@ def forward_subset_selection(X_train, X_test, y_train, y_test, n_features=3):
     pred.plot(x='date', y='MLR_Pred', ax=ax1, title='Forward subset selection for ' + str(best_features) + ' features.',
               color='blue')
     # plt.show()
-    plt.savefig(path_forward_selection_plots+"models/MLR_forward.png")
+    plt.savefig(path_forward_selection_plots + "models/MLR_forward.png")
     plt.clf()
 
     sns_rf = sns.lmplot(x='RefSt', y='MLR_Pred', data=pred, fit_reg=True,
@@ -70,7 +69,7 @@ def forward_subset_selection(X_train, X_test, y_train, y_test, n_features=3):
     sns_rf.set(ylim=(-2, 3))
     sns_rf.set(xlim=(-2, 3))
     plt.show()
-    plt.savefig(path_forward_selection_plots+"models/MLR_forward_line.png")
+    plt.savefig(path_forward_selection_plots + "models/MLR_forward_line.png")
     # plt.clf()
 
 
@@ -102,7 +101,8 @@ def ridge_regression(x, y):
         rmse.append(metrics.mean_squared_error(y_test, pred, squared=False))
         mae.append(metrics.mean_absolute_error(y_test, pred))
 
-    utilities.table_creation(['Alpha Values', 'R^2', 'RMSE', 'MAE'], [alphas, r2, rmse, mae], 'ridge_regression_errors.txt')
+    utilities.table_creation(['Alpha Values', 'R^2', 'RMSE', 'MAE'], [alphas, r2, rmse, mae],
+                             'ridge_regression_errors.txt')
     utilities.table_creation(['Alpha Values', 'coefs'], [alphas, coef], 'ridge_regression_coefs.txt')
 
     # plot errors
@@ -113,7 +113,7 @@ def ridge_regression(x, y):
     plt.plot(alphas, rmse, color='black')
     plt.plot(alphas, mae, color='green')
     plt.legend(("R^2", "RMSE", "MAE"))
-    plt.savefig(path_ridge_regression_plots+"error_metrics/ridge_errors.png")
+    plt.savefig(path_ridge_regression_plots + "error_metrics/ridge_errors.png")
     plt.clf()
     # plt.show()
 
@@ -125,7 +125,7 @@ def ridge_regression(x, y):
     plt.ylabel('coefficients')
     plt.title("Plot of coefficients for different alphas")
     ax.legend(("Sensor O3 coef", "Temp coef", "RelHum coef", "Sensor_NO2", "Sensor_NO", "Sensor_SO2"))
-    plt.savefig(path_ridge_regression_plots+"models/ridge_coefs.png")
+    plt.savefig(path_ridge_regression_plots + "models/ridge_coefs.png")
     plt.clf()
     # plt.show()
 
@@ -204,7 +204,7 @@ def lasso_regression(x, y):
     plt.plot(alphas, rmse, color='black')
     plt.plot(alphas, mae, color='green')
     plt.legend(("R^2", "RMSE", "MAE"))
-    plt.savefig(path_lasso_regression_plots+"error_metrics/lasso_errors.png")
+    plt.savefig(path_lasso_regression_plots + "error_metrics/lasso_errors.png")
     plt.clf()
     # plt.show()
 
@@ -216,7 +216,7 @@ def lasso_regression(x, y):
     plt.ylabel('coefficients')
     plt.title("Plot of coefficients for different alphas")
     ax.legend(("Sensor O3 coef", "Temp coef", "RelHum coef", "Sensor_NO2", "Sensor_NO", "Sensor_SO2"))
-    plt.savefig(path_lasso_regression_plots+"models/lasso_coefs.png")
+    plt.savefig(path_lasso_regression_plots + "models/lasso_coefs.png")
     plt.clf()
     # plt.show()
 
@@ -241,7 +241,7 @@ def lasso_regression(x, y):
 
     ax1 = pred.plot(x='date', y='RefSt', color='red')
     pred.plot(x='date', y='Pred', ax=ax1, title='LASSO for alpha ' + str(best_a), color='blue')
-    plt.savefig(path_lasso_regression_plots+"models/lasso_pred.png")
+    plt.savefig(path_lasso_regression_plots + "models/lasso_pred.png")
     plt.clf()
 
     sns_r = sns.lmplot(x='RefSt', y='Pred', data=pred, fit_reg=True, height=5, aspect=1.5,
@@ -250,9 +250,5 @@ def lasso_regression(x, y):
     sns_r.set(ylim=(-2, 3))
     sns_r.set(xlim=(-2, 3))
     # plt.show()
-    plt.savefig(path_lasso_regression_plots+"models/lasso_line.png")
+    plt.savefig(path_lasso_regression_plots + "models/lasso_line.png")
     plt.clf()
-
-
-
-

@@ -5,13 +5,18 @@ from sklearn import metrics
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import utilities
+from sklearn.model_selection import train_test_split
 
 mpl.rcParams['figure.figsize'] = (10, 6)
 
 # Kernel Ridge Regression path to save all the plots
 path_kernel_ridge_regression_plots = "./images/kernel_ridge_regression/"
 
-def polynomial_kernel(X_train, X_test, y_train, y_test):
+
+def polynomial_kernel(x, y):
+    # divide dataset
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=1)
+
     pred_test = pd.DataFrame()
     pred_test['RefSt'] = y_test
     pred_test['Sensor_O3'] = X_test['Sensor_O3']
@@ -61,8 +66,9 @@ def polynomial_kernel(X_train, X_test, y_train, y_test):
 
     # Create the table and save it to a file
     utilities.table_creation(['Degree value', 'R²', 'RMSE', 'MAE'],
-                   [degree, errors_R2, errors_rmse, errors_mae],
-                   'kernel_ridge_regression_poly.txt')  # Parameters: headers (list), data (list), file (string)
+                             [degree, errors_R2, errors_rmse, errors_mae],
+                             'kernel_ridge_regression_poly.txt')  # Parameters: headers (list), data (list), file (
+    # string)
 
 
 def gaussian_kernel(X_train, X_test, y_train, y_test):
@@ -96,19 +102,7 @@ def gaussian_kernel(X_train, X_test, y_train, y_test):
 
     # Create the table and save it to a file
     utilities.table_creation(['R²', 'RMSE', 'MAE'],
-                   [errors_R2, errors_rmse, errors_mae],
-                   'kernel_ridge_regression_gaussian.txt')  # Parameters: headers (list), data (list), file (string)
-
-    """# Both plots
-    ax = pred_test.plot(x='date', y='RefSt')
-    ax2 = pred_test.plot(x='date', y='Kernel_Gauss_Pred', ax=ax)
-    pred_test.plot(x='date', y='Best_Kernel_Poly_Pred', ax=ax,
-                   title='Different')
-    plt.savefig(path_kernel_ridge_regression_plots + str("models/kernel_gauss_poly_model.png"),
-                bbox_inches='tight')
-    plt.clf()"""
-
-
-
-
+                             [errors_R2, errors_rmse, errors_mae],
+                             'kernel_ridge_regression_gaussian.txt')  # Parameters: headers (list), data (list),
+    # file (string)
 

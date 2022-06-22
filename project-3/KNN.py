@@ -13,7 +13,9 @@ import matplotlib as mpl
 mpl.rcParams['figure.figsize'] = (10, 6)
 
 
-def k_neighbors(x_train, x_test, y_train, y_test):
+def k_neighbors(x, y):
+    # divide dataset
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=1)
 
     pred = pd.DataFrame()
     pred['RefSt'] = y_test

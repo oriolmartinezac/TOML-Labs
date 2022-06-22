@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+
 def plot_sensor_data(new_PR_data_inner):
     # PLOT raw data from Sensor_O3 against date
     new_PR_data_inner.plot(x='date', y='Sensor_O3')
@@ -15,9 +16,10 @@ def plot_sensor_data(new_PR_data_inner):
 
     # Normalize the data
     new_PR_data_inner['Sensor_O3_norm'] = (new_PR_data_inner['Sensor_O3'] - new_PR_data_inner['Sensor_O3'].mean()) / \
-                                     new_PR_data_inner['Sensor_O3'].std()
-    new_PR_data_inner['RefSt_norm'] = (new_PR_data_inner['RefSt'] - new_PR_data_inner['RefSt'].mean()) / new_PR_data_inner[
-        'RefSt'].std()
+                                          new_PR_data_inner['Sensor_O3'].std()
+    new_PR_data_inner['RefSt_norm'] = (new_PR_data_inner['RefSt'] - new_PR_data_inner['RefSt'].mean()) / \
+                                      new_PR_data_inner[
+                                          'RefSt'].std()
 
     # SCATTER PLOT LOW COST SENSOR O3 AGAINST REFST but now normalized data
     normalized_plt = new_PR_data_inner.plot.scatter(x='Sensor_O3_norm', y='RefSt_norm', color='green')
