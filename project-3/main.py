@@ -27,6 +27,9 @@ import KNN
 # Packages to do Random Forest
 import RF
 
+# Packages to do SVR
+import SVR
+
 if __name__ == "__main__":
     ####### PRE-EXERCISE 1 #######
     # CLEAN data before plotting (I.E. dates to datetime, big numbers to numeric)
@@ -73,4 +76,7 @@ if __name__ == "__main__":
     RF.random_forest(X, y)
 
     ####### EXERCISE 6 #######
+    SVR.svr(X, y)
+
+
 

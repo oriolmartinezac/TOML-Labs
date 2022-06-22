@@ -5,7 +5,10 @@ from sklearn import metrics
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import utilities
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
+import numpy as np
+import math
+import seaborn as sns
 
 mpl.rcParams['figure.figsize'] = (10, 6)
 
@@ -71,38 +74,86 @@ def polynomial_kernel(x, y):
     # string)
 
 
-def gaussian_kernel(X_train, X_test, y_train, y_test):
-    pred_test = pd.DataFrame()
-    pred_test['RefSt'] = y_test
-    pred_test['Sensor_O3'] = X_test['Sensor_O3']
-    pred_test['date'] = new_PR_data_inner['date']
+def gaussian_kernel(x, y):
+    # divide dataset
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=1)
 
-    errors_rmse = []
-    errors_R2 = []
-    errors_mae = []
+    pred = pd.DataFrame()
+    pred['RefSt'] = y_test
+    pred['Sensor_O3'] = x_test['Sensor_O3']
+    pred['date'] = new_PR_data_inner['date']
 
-    kernel_rbf = KernelRidge(kernel="rbf").fit(X_train, y_train)
+    alphas = np.arange(0.1, 1.1, 0.1)
 
-    pred_kernel_gauss_model = kernel_rbf.predict(X_test)
-    print("R²:", metrics.r2_score(y_test, pred_kernel_gauss_model))
-    errors_R2.append(metrics.r2_score(y_test, pred_kernel_gauss_model))
-    print("RMSE: ", metrics.mean_squared_error(y_test, pred_kernel_gauss_model, squared=False))
-    errors_rmse.append(metrics.mean_squared_error(y_test, pred_kernel_gauss_model, squared=False))
-    print("MAE: ", metrics.mean_absolute_error(y_test, pred_kernel_gauss_model))
-    errors_mae.append(metrics.mean_absolute_error(y_test, pred_kernel_gauss_model))
-    pred_test['Kernel_Gauss_Pred'] = pred_kernel_gauss_model
+    r2 = []
+    mse = []
+    mae = []
 
-    # Plot
-    ax = pred_test.plot(x='date', y='RefSt')
-    pred_test.plot(x='date', y='Kernel_Gauss_Pred', ax=ax,
-                   title='Gaussian Kernel Ridge Regression')
-    plt.savefig(path_kernel_ridge_regression_plots + str("models/kernel_gauss_model.png"),
-                bbox_inches='tight')
+    for a in alphas:
+        clf = KernelRidge(kernel='rbf', alpha=a)
+        clf.fit(x_train, y_train)
+        r2_scores = cross_val_score(clf, x_train, y_train, cv=10, scoring='r2')
+        mae_score = cross_val_score(clf, x_train, y_train, cv=10, scoring='neg_mean_absolute_error')
+        mse_score = cross_val_score(clf, x_train, y_train, cv=10)
+        r2.append(r2_scores.mean())
+        mse.append(mse_score.mean())
+        mae.append(mae_score.mean())
+
+    rmse = [math.sqrt(1 - x) for x in mse]
+    mae = [-1 * x for x in mae]
+    print(r2)
+    print(rmse)
+    utilities.table_creation(['Alpha Values', 'R^2', 'RMSE', 'MAE'], [alphas, r2, rmse, mae],
+                             'kernel_ridge_regression_gaussian.txt')
+
+    # plot errors
+    plt.title("R-squared")
+    plt.xlabel('Lambda')
+    plt.ylabel('R^2')
+    plt.plot(alphas, r2, color='red')
+    plt.savefig(path_kernel_ridge_regression_plots + "error_metrics/kr_rbf_r2.png")
     plt.clf()
 
-    # Create the table and save it to a file
-    utilities.table_creation(['R²', 'RMSE', 'MAE'],
-                             [errors_R2, errors_rmse, errors_mae],
-                             'kernel_ridge_regression_gaussian.txt')  # Parameters: headers (list), data (list),
-    # file (string)
+    plt.title("Root Mean Squared Error")
+    plt.xlabel('Lambda')
+    plt.ylabel('RMSE')
+    plt.plot(alphas, rmse, color='blue')
+    plt.savefig(path_kernel_ridge_regression_plots + "error_metrics/kr_rbf_rmse.png")
+    plt.clf()
 
+    plt.title("Mean Absoulte Error")
+    plt.xlabel('Lambda')
+    plt.ylabel('MAE')
+    plt.plot(alphas, mae, color='black')
+    plt.savefig(path_kernel_ridge_regression_plots + "error_metrics/kr_rbf_mae.png")
+    plt.clf()
+
+    # best alpha is the one with higher R^2
+    best_n = alphas[r2.index(max(r2))]
+    print(best_n)
+
+    model = KernelRidge(alpha=best_n)
+    model.fit(x_train, y_train)
+    mpred = model.predict(x_test)
+    acc = model.score(x_test, y_test)
+    pred['Pred'] = mpred
+
+    print("RBF PREDICTION")
+    print("R^2: ", metrics.r2_score(y_test, mpred))
+    print("RMSE: ", metrics.mean_squared_error(y_test, mpred, squared=False))
+    print("MAE: ", metrics.mean_absolute_error(y_test, mpred))
+    print("Accuracy: ", (acc * 100))
+
+    # Plots
+    ax1 = pred.plot(x='date', y='RefSt', color='red')
+    pred.plot(x='date', y='Pred', ax=ax1, title='RBF for alpha ' + str(best_n), color='blue')
+    plt.savefig(path_kernel_ridge_regression_plots + "models/kr_rbf_pred.png")
+    plt.clf()
+
+    sns_rf = sns.lmplot(x='RefSt', y='Pred', data=pred, fit_reg=True, height=5, aspect=1.5,
+                        line_kws={'color': 'orange'})
+    sns_rf.fig.suptitle('RBF for alpha' + str(best_n))
+    sns_rf.set(ylim=(-2, 3))
+    sns_rf.set(xlim=(-2, 3))
+    plt.savefig(path_kernel_ridge_regression_plots + "models/kr_rbf_line.png")
+    plt.clf()
