@@ -108,24 +108,24 @@ def gaussian_kernel(x, y):
 
     # plot errors
     plt.title("R-squared")
-    plt.xlabel('Lambda')
+    plt.xlabel('Lambdas')
     plt.ylabel('R^2')
     plt.plot(alphas, r2, color='red')
-    plt.savefig(path_kernel_ridge_regression_plots + "error_metrics/kr_rbf_r2.png")
+    plt.savefig(path_kernel_ridge_regression_plots + "error_metrics/kr_rbf_r2.png", bbox_inches='tight')
     plt.clf()
 
     plt.title("Root Mean Squared Error")
-    plt.xlabel('Lambda')
+    plt.xlabel('Lambdas')
     plt.ylabel('RMSE')
     plt.plot(alphas, rmse, color='blue')
-    plt.savefig(path_kernel_ridge_regression_plots + "error_metrics/kr_rbf_rmse.png")
+    plt.savefig(path_kernel_ridge_regression_plots + "error_metrics/kr_rbf_rmse.png", bbox_inches='tight')
     plt.clf()
 
-    plt.title("Mean Absoulte Error")
-    plt.xlabel('Lambda')
+    plt.title("Mean Absolute Error")
+    plt.xlabel('Lambdas')
     plt.ylabel('MAE')
     plt.plot(alphas, mae, color='black')
-    plt.savefig(path_kernel_ridge_regression_plots + "error_metrics/kr_rbf_mae.png")
+    plt.savefig(path_kernel_ridge_regression_plots + "error_metrics/kr_rbf_mae.png", bbox_inches='tight')
     plt.clf()
 
     # best alpha is the one with higher R^2

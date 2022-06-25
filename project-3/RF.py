@@ -46,24 +46,24 @@ def random_forest(x, y):
 
     # plot errors
     plt.title("R-squared")
-    plt.xlabel('Number of neighbors')
+    plt.xlabel('Number of trees')
     plt.ylabel('R^2')
     plt.plot(n_trees, r2, color='red')
-    plt.savefig(path_random_forest_plots + "error_metrics/rf_r2.png")
+    plt.savefig(path_random_forest_plots + "error_metrics/rf_r2.png", bbox_inches='tight')
     plt.clf()
 
     plt.title("Root Mean Squared Error")
-    plt.xlabel('Number of neighbors')
+    plt.xlabel('Number of trees')
     plt.ylabel('RMSE')
     plt.plot(n_trees, rmse, color='blue')
-    plt.savefig(path_random_forest_plots + "error_metrics/rf_rmse.png")
+    plt.savefig(path_random_forest_plots + "error_metrics/rf_rmse.png", bbox_inches='tight')
     plt.clf()
 
-    plt.title("Mean Absoulte Error")
-    plt.xlabel('Number of neighbors')
+    plt.title("Mean Absolute Error")
+    plt.xlabel('Number of trees')
     plt.ylabel('MAE')
     plt.plot(n_trees, mae, color='black')
-    plt.savefig(path_random_forest_plots + "error_metrics/rf_mae.png")
+    plt.savefig(path_random_forest_plots + "error_metrics/rf_mae.png", bbox_inches='tight')
     plt.clf()
 
     # best number of trees is the one with higher R^2

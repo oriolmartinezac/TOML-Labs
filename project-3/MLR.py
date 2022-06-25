@@ -9,6 +9,11 @@ import numpy as np
 import seaborn as sns  # for scatter plot
 from mlxtend.feature_selection import SequentialFeatureSelector as sfs
 from sklearn.model_selection import train_test_split
+import matplotlib as mlp
+
+mlp.rcParams.update({'figure.max_open_warning': 0})
+plt.rcParams["figure.figsize"] = (15, 10)
+
 
 # FORWARD SUBSET SELECTION path to plots
 path_forward_selection_plots = "./images/forward_subset_selection/"
@@ -107,13 +112,13 @@ def ridge_regression(x, y):
 
     # plot errors
     plt.title("R^2, Root Mean Square Error and Mean Absolute Error")
-    plt.xlabel('Different alphas')
+    plt.xlabel('Different lambdas')
     plt.ylabel('Error')
     plt.plot(alphas, r2, color='red')
     plt.plot(alphas, rmse, color='black')
     plt.plot(alphas, mae, color='green')
     plt.legend(("R^2", "RMSE", "MAE"))
-    plt.savefig(path_ridge_regression_plots + "error_metrics/ridge_errors.png")
+    plt.savefig(path_ridge_regression_plots + "error_metrics/ridge_errors.png", bbox_inches='tight')
     plt.clf()
     # plt.show()
 
@@ -121,11 +126,11 @@ def ridge_regression(x, y):
     ax = plt.gca()
     ax.plot(alphas, coef)
     plt.axis('tight')
-    plt.xlabel('alpha')
+    plt.xlabel('lambda')
     plt.ylabel('coefficients')
-    plt.title("Plot of coefficients for different alphas")
+    plt.title("Plot of coefficients for different lambdas")
     ax.legend(("Sensor O3 coef", "Temp coef", "RelHum coef", "Sensor_NO2", "Sensor_NO", "Sensor_SO2"))
-    plt.savefig(path_ridge_regression_plots + "models/ridge_coefs.png")
+    plt.savefig(path_ridge_regression_plots + "models/ridge_coefs.png", bbox_inches='tight')
     plt.clf()
     # plt.show()
 
@@ -150,14 +155,14 @@ def ridge_regression(x, y):
     pred['date'] = new_PR_data_inner['date']
 
     ax1 = pred.plot(x='date', y='RefSt', color='red')
-    pred.plot(x='date', y='Ridge_Pred', ax=ax1, title='Ridge regression for alpha 1', color='blue')
+    pred.plot(x='date', y='Ridge_Pred', ax=ax1, title='Ridge regression for lambda 1', color='blue')
     label = "Ridge_1.png"
     plt.savefig(path_ridge_regression_plots + "models/" + label)
     plt.clf()
 
     sns_r = sns.lmplot(x='RefSt', y='Ridge_Pred', data=pred, fit_reg=True, height=5, aspect=1.5,
                        line_kws={'color': 'orange'})
-    sns_r.fig.suptitle('Ridge regression for alpha 1')
+    sns_r.fig.suptitle('Ridge regression for lambda 1')
     sns_r.set(ylim=(-2, 3))
     sns_r.set(xlim=(-2, 3))
 
@@ -198,13 +203,13 @@ def lasso_regression(x, y):
     # PLOTS
     # Errors
     plt.title("R^2, Root Mean Square Error and Mean Absolute Error")
-    plt.xlabel('Different alphas')
+    plt.xlabel('Different lambdas')
     plt.ylabel('Error')
     plt.plot(alphas, r2, color='red')
     plt.plot(alphas, rmse, color='black')
     plt.plot(alphas, mae, color='green')
     plt.legend(("R^2", "RMSE", "MAE"))
-    plt.savefig(path_lasso_regression_plots + "error_metrics/lasso_errors.png")
+    plt.savefig(path_lasso_regression_plots + "error_metrics/lasso_errors.png", bbox_inches='tight')
     plt.clf()
     # plt.show()
 
@@ -212,11 +217,11 @@ def lasso_regression(x, y):
     ax = plt.gca()
     ax.plot(alphas, coef)
     plt.axis('tight')
-    plt.xlabel('alpha')
+    plt.xlabel('lambda')
     plt.ylabel('coefficients')
-    plt.title("Plot of coefficients for different alphas")
+    plt.title("Plot of coefficients for different lambdas")
     ax.legend(("Sensor O3 coef", "Temp coef", "RelHum coef", "Sensor_NO2", "Sensor_NO", "Sensor_SO2"))
-    plt.savefig(path_lasso_regression_plots + "models/lasso_coefs.png")
+    plt.savefig(path_lasso_regression_plots + "models/lasso_coefs.png", bbox_inches='tight')
     plt.clf()
     # plt.show()
 
@@ -229,7 +234,7 @@ def lasso_regression(x, y):
     rm.fit(x_train, y_train)
     rmpred = rm.predict(x_test)
 
-    print("LASSO PREDICTION")
+    print("Lasso PREDICTION")
     print("R^2: ", str(metrics.r2_score(y_test, rmpred)))
     print("RMSE: ", str(metrics.mean_squared_error(y_test, rmpred, squared=False)))
     print("MAE : ", str(metrics.mean_absolute_error(y_test, rmpred)))
@@ -240,13 +245,13 @@ def lasso_regression(x, y):
     pred['date'] = new_PR_data_inner['date']
 
     ax1 = pred.plot(x='date', y='RefSt', color='red')
-    pred.plot(x='date', y='Pred', ax=ax1, title='LASSO for alpha ' + str(best_a), color='blue')
+    pred.plot(x='date', y='Pred', ax=ax1, title='Lasso for lambda ' + str(best_a), color='blue')
     plt.savefig(path_lasso_regression_plots + "models/lasso_pred.png")
     plt.clf()
 
     sns_r = sns.lmplot(x='RefSt', y='Pred', data=pred, fit_reg=True, height=5, aspect=1.5,
                        line_kws={'color': 'orange'})
-    sns_r.fig.suptitle('LASSO for alpha ' + str(best_a))
+    sns_r.fig.suptitle('Lasso for lambda ' + str(best_a))
     sns_r.set(ylim=(-2, 3))
     sns_r.set(xlim=(-2, 3))
     # plt.show()
