@@ -24,12 +24,12 @@ def k_neighbors(x, y):
     pred['Sensor_O3'] = x_test['Sensor_O3']
     pred['date'] = new_PR_data_inner['date']
 
-    n_neighbors = [2, 5, 8, 10, 12, 15, 18, 22, 25]
+    n_neighbors = [2, 5, 7, 10, 12, 15, 18, 22, 25]
     r2 = []
     mse = []
     mae = []
     for k in n_neighbors:  # running for different K values to know which yields the max accuracy.
-        clf = KNeighborsRegressor(n_neighbors=k, weights='distance', p=1)
+        clf = KNeighborsRegressor(n_neighbors=k, weights='distance')
         clf.fit(x_train, y_train)
         r2_scores = cross_val_score(clf, x_train, y_train, cv=10, scoring='r2')
         mae_score = cross_val_score(clf, x_train, y_train, cv=10, scoring='neg_mean_absolute_error')
