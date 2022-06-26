@@ -14,7 +14,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 from statistics import mean
-from network import Network
 
 def sigmoid(xx):
     return(1/(1+np.exp(-xx)))
@@ -118,7 +117,7 @@ def plot_grid(ww1,ww2,ww3, xtest, ytest):
 #####################################################
 # T is batch size;
 # H is hidden dimension
-T, H = 640, 15 # original values: 640 20  # BEST 640, 20
+T, H = 640, 20 # original values: 640 20  # BEST 640, 20
 
 D_in=3  # Input dimension (includes BIAS!)
 D_out=1 #output dimension, class (1,0) or (0,1)
@@ -181,6 +180,8 @@ plt.plot(x[id_1,0],x[id_1,1],"d",c="blue")
 
 plt.show()
 
+
+
 # Randomly initialize weights
 w1 = np.random.randn(D_in, H)
 w2 = np.random.randn(H, H)
@@ -192,13 +193,12 @@ ITER=2000 # original value: 2000
 
 tot_loss_array=np.zeros(shape=(ITER,2)) # stores training[0] and testing[1] errors
 
-nn = Network([D_in,H,D_out])
-nn.SGD([(x.tolist(), y.tolist())], T, 2000, learning_rate)
 
-#list(tuple(list,list))
-"""
 forward_time = []
 backward_time = []
+
+start_time = time.time()
+found = False
 
 for t in range(ITER):
   start_time_forward = time.time()
@@ -211,6 +211,31 @@ for t in range(ITER):
   z3 = a2.dot(w3)
   y_pred = sigmoid(z3)      # Sigmoid
 
+  """# New code
+  z1 = x.dot(w1)
+  a1 = np.maximum(z1, 0.1*z1)  # leaky  ReLU
+  z2 = a1.dot(w2)
+  a2 = np.maximum(z2, 0.1*z2)  # leaky ReLU
+  z3 = a2.dot(w3)
+  y_pred = sigmoid(zx3)  # Sigmoid"""
+
+  """# New code
+  a=0.01
+  z1 = x.dot(w1)
+  a1 = np.maximum(z1, a*z1)  # PReLU
+  z2 = a1.dot(w2)
+  a2 = np.maximum(z2, a*z2)  # PReLU
+  z3 = a2.dot(w3)
+  y_pred = sigmoid(z3)  # Sigmoid"""
+
+  """# New code
+  z1 = x.dot(w1)
+  a1 = np.maximum(z1, ((math.e**z1)-1))  # leaky  ReLU
+  z2 = a1.dot(w2)
+  a2 = np.maximum(z2, ((math.e**z2)-1))  # leaky ReLU
+  z3 = a2.dot(w3)
+  y_pred = sigmoid(z3)  # Sigmoid"""
+
 
   #print("--- %s seconds to do forward ---" % (time.time() - start_time_forward))
   forward_time.append(time.time() - start_time_forward)
@@ -220,8 +245,13 @@ for t in range(ITER):
 
   tot_loss_array[t,0]=loss.mean()
   if t%10==0: print(t, loss.mean())
-  
-   # check testing error
+
+  if tot_loss_array[t, 0] <= 0.6111 and found == False:
+      found = True
+      print("Time to find the 0.6 error: ", time.time() - start_time)
+      break
+
+  # check testing error
   ytest_pred=forward(xtest,w1,w2,w3)
   losstest = - ytest*safe_log(ytest_pred) - (1-ytest)*safe_log(1-ytest_pred)
   tot_loss_array[t,1]=losstest.mean()
@@ -269,6 +299,13 @@ for t in range(ITER):
   w3 -= learning_rate * v3
 
 
+  """if t%100 == 0:
+      print("WEIGHTS")
+      print(w1)
+      print("\n")
+      print(w2[:, 0])  
+  """
+
   if (t%250==0): 
       plot_grid(w1, w2, w3, xtest, ytest)
 
@@ -285,7 +322,7 @@ print("Last tess loss value: ", tot_loss_array[ITER-1,1])
 
 plt.plot(np.log(tot_loss_array[:,0]), c="red")
 plt.plot(np.log(tot_loss_array[:,1]), c="blue")
-plt.show()"""
+plt.show()
 
 
 
