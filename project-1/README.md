@@ -4,6 +4,8 @@
 
 <!-- ADD EQUATIONS -->
 
+All the information can be found too in [report-project1](https://github.com/oriolmartinezac/TOML-Labs/tree/main/project-1/report-project1.pdf) PDF.
+
 ## Introduction
 The idea of this project is to identify the convexity of the problems and how to solve them using the programming language Python.
 
@@ -263,10 +265,10 @@ The outputs given by sending the Jacobian matrix to solver are shown below.
 
 In the following table there are the number iterations, function evaluations and gradient evaluations as the output of the solver program by using the different initial guesses.
 
-| **Initial guesses**                                    | **Normal** (Iterations, function evaluations, gradient evaluations) | **Jacobian** (Iterations, function evaluations, gradient evaluations) |
-|--------------------------------------------------------|---------------------------------------------------------------------|-----------------------------------------------------------------------|
-| ${x_1 = 10}$, ${x_2 = -10}$ \textbf{(Not feasible)}    | 8, 27, 8                                                            | 9, 8, 8                                                               |
-| ${x_1 = 10}$, ${x_2 = 10}$ \newline\textbf{(Feasible)} | 13, 47, 12                                                          | 13, 17, 12                                                            |
+| **Initial guesses**                       | **Normal** (Iterations, function evaluations, gradient evaluations) | **Jacobian** (Iterations, function evaluations, gradient evaluations) |
+|-------------------------------------------|---------------------------------------------------------------------|-----------------------------------------------------------------------|
+| ${x_1 = 10}$, ${x_2 = -10}$ **(Not feasible)** | 8, 27, 8                                                            | 9, 8, 8                                                               |
+| ${x_1 = 10}$, ${x_2 = 10}$ **(Feasible)** | 13, 47, 12                                                          | 13, 17, 12                                                            |
 
 In the table above we can see the same thing that we saw in the previous exercise, giving the Jacobian matrix improves the performance of the solver in terms of finding the solution.
 
