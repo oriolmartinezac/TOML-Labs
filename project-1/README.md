@@ -18,7 +18,7 @@ Before entering in more detail with a problem is convex or not we first need to 
 The **Hessian matrix** (*H(f)*) is the matrix that contains the second derivatives (*f''*) of a function given,  The way to represent the Hessian matrix is the following one.
 ![hessian matrix](./images/equations/1.png)
 
-The **Gradient** ($ \nabla f $) is the vector field whose values at a point $p$ is the vector whose components are the partial derivatives of *f* (*f'*).
+The **Gradient** ($\nabla f$) is the vector field whose values at a point $p$ is the vector whose components are the partial derivatives of *f* (*f'*).
 <!--TODO: Equation -->
 
 The **Jacobian matrix** is the matrix of all its first-order partial derivatives (*f'*).
