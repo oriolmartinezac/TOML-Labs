@@ -19,19 +19,28 @@ The **Hessian matrix** (*H(f)*) is the matrix that contains the second derivativ
 ![hessian matrix](./images/equations/1.png)
 
 The **Gradient** ($\nabla f$) is the vector field whose values at a point $p$ is the vector whose components are the partial derivatives of *f* (*f'*).
-<!--TODO: Equation -->
+![gradient matrix](./images/equations/2.png)
 
 The **Jacobian matrix** is the matrix of all its first-order partial derivatives (*f'*).
-<!--TODO: Equation -->
+![jacobian matrix](./images/equations/3.png)
+
 So we can say also that the Jacobian is equal to the Gradient of the function.
-<!--TODO: Equation -->
+![alt](./images/equations/4.png)
 
 Now that **Hessian matrix**, **Gradient** and **Jacobian matrix** is shown, we can continue by verifying if a problem is convex. 
 The way to do it is by fulfilling some features/conditions that are shown below:
 
-1. **Domain of the function**: The way to verify a domain is convex, is to check if any linear combination of two points inside the function could have a representative value in the existing set. <!-- TODO: Equation -->
-2. **First-order condition**: <!--TODO: Equations --> 
-3. **Second-order condition**: To fulfill the second-order condition, the Hessian matrix of the functions has to be positive semi-definite (<!-- TODO: $H \geq 0$-->). If this condition is fulfilled we can say the functions is convex. It is also important to remark that when the Hessian is equal to 0, it means that we have a flat plane (convex but not strictly convex).
+1. **Domain of the function**: The way to verify a domain is convex, is to check if any linear combination of two points inside the function could have a representative value in the existing set. 
+
+![alt](./images/equations/5.png)
+
+3. **First-order condition**:
+
+![alt](./images/equations/6.png)
+
+$x \in \mathbb{R}^n, b \in \mathbb{R}^m, A \in \mathbb{R}^{mxn}$.
+
+5. **Second-order condition**: To fulfill the second-order condition, the Hessian matrix of the functions has to be positive semi-definite (<!-- TODO: $H \geq 0$-->). If this condition is fulfilled we can say the functions is convex. It is also important to remark that when the Hessian is equal to 0, it means that we have a flat plane (convex but not strictly convex).
 
 So, one function will be convex if all the supporting hyper-planes are below the function given if it is the opposite is concave and if above/below could be convex and concave.
 Is important to highlight that there are more ways to verify a function is convex, but the ones that are explaining more or are more easy to understand are those.
