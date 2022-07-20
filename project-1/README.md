@@ -67,5 +67,77 @@ Where $d^*$ is the best solution of the Lagrange Dual Problem.
 
 ![equation](./images/equations/10.png)
 
-The weak duality theorem says that for the general problem, the optimal value of the Lagrange dual problem ($d^*$) and the optimal value of the primal minimization problem ($p^*$) are related by:
-$$d^* \le p^$$
+The weak duality theorem says that for the general problem, the optimal value of the Lagrange dual problem ($d^\*$) and the optimal value of the primal minimization problem ($p^\*$) are related by:
+
+![equation](./images/equations/11.png)
+
+This means that the dual problem provides the lower bound for the primal problem. The opposite holds true for a primal maximization problem. The difference between the two optimal values is called the optimal duality gap.
+The strong duality theorem says that for convex problems that satisfy certain conditions, the optimal duality gap is zero, meaning that the optimal values of the primal and dual problems are the same. For convex problems to guarantee the strong duality condition, Slater's constraint qualifications must be met, i.e. the convex problem must be strictly feasible.
+If $d^* \leq p^\*$, then there is **weak duality**, while if $d^* =  p^*$ there is **strong duality**.
+
+The **Karush-Kuhn-Tucker** (KKT) conditions are first derivative tests (a.k.a. first-order necessary conditions) for a solution in non-linear programming to be optimal, provided that some regularity conditions are satisfied.
+If we assume that $x^\*$ is the optimal point of the primal problem and ($\lambda^*, \nu^*$) the optimal points of the dual problem. The conditions are the following ones:
+1. **Primal constraints:**
+
+![equation](./images/equations/12.png)
+
+2. **Primal constraints:**
+
+![equation](./images/equations/13.png)
+
+3. **Dual constraints:**
+
+![equation](./images/equations/14.png)
+
+4. **Complementary slackness:**
+
+![equation](./images/equations/15.png)
+
+5. **Gradient of Lagrangian vanishes:**
+
+![equation](./images/equations/16.png)
+
+## Exercise 1
+Given the following **objective function**:
+
+![equation](./images/equations/17.png)
+
+With the following **constraints** and values for the variables:
+
+![equation](./images/equations/18.png)
+
+![equation](./images/equations/19.png)
+
+And the values for the variables as:
+
+![equation](./images/equations/20.png)
+
+### Identify whether is convex or not.
+
+With the definitions explained before we can say that the domain of the problem is convex, as the variables in the set are real, i.e. all the linear combinations between the two points in the existing set (the representation of the function line).
+Once the domain is checked, we have to analyze the objective function to see if it is whether convex or not. The easy way to check is by checking the **second-order condition**. The Hessian matrix is:
+
+![equation](./images/equations/21.png)
+
+Now once the Hessian matrix is calculated we have to calculate the determinant of the Hessian matrix to know if it is positive semi-definite.
+
+![equation](./images/equations/22.png)
+
+As the determinant of the Hessian matrix is less than 0 we can say that the Hessian is not positive semi-definite and then the objective function to minimize is not convex.
+Summarizing we can say that the problem is not convex due to that the objective function is not convex.
+
+### Find the minimum, e.g. use scipy.optimize.minimize (SLSQP as method) of python. Use as initial points x0 \[0,0], \[10,20], \[-10,1], \[-30,-30] and explain the difference in the solutions if any. Choose which ones give an optimal point/value and give how long take to converge to a result. Plot the objective curve and see whether the plot helps you to understand the optimization problem an results.
+
+The program used could solve all the problems, i.e. find the points that minimizes the objective function, with the different initial guesses.
+
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+![alt](./images/output-exercise-1-1.png)  |  ![alt](./images/output-exercise-1-1.png)
+
+![equation](./images/output-exercise-1-1.png)
+
+
+*Output of the program with initial guess as \[0,0].*
+
+![equation](./images/output-exercise-1-2.png)
+
