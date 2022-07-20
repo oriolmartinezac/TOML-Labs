@@ -57,7 +57,7 @@ The **Lagrange Dual Function** is defined as the minimum of the Lagrangian over 
 
 ![lagrange dual function](./images/equations/8.png)
 
-Since the $q(\lambda,\nu)$ is an **infimum** of a family of affine functions, then it is a **concave** function. The **Lagrange Dual** function has lower bounds on optimal values ($P^*$).
+Since the $q(\lambda,\nu)$ is an **infimum** of a family of affine functions, then it is a **concave** function. The **Lagrange Dual** function has lower bounds on optimal values ($P^{*}$).
 For $\lambda \geq 0$ and any $\nu -> q(\lambda) \leq p^*$.
 The idea is to find the best **lower bound** that can be obtained with the Lagrange dual function.
 
