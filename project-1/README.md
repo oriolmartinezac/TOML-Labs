@@ -16,9 +16,9 @@ Before trying to solve any problem first is necessary to analyze it. It is essen
 Before entering in more detail with a problem is convex or not we first need to know what are **Hessian matrix**, **Gradient**, and **Jacobian matrix**.
 
 The **Hessian matrix** (*H(f)*) is the matrix that contains the second derivatives (*f''*) of a function given,  The way to represent the Hessian matrix is the following one.
-<!--TODO: Equation -->
+![hessian matrix](./images/equations/1.png)
 
-The **Gradient** (<!--TODO $\nabla f$ -->) is the vector field whose values at a point $p$ is the vector whose components are the partial derivatives of *f* (*f'*).
+The **Gradient** ($ \nabla f $) is the vector field whose values at a point $p$ is the vector whose components are the partial derivatives of *f* (*f'*).
 <!--TODO: Equation -->
 
 The **Jacobian matrix** is the matrix of all its first-order partial derivatives (*f'*).
@@ -48,3 +48,4 @@ Where <!-- TODO: Equation $d^*$ --> is the best solution of the Lagrange Dual Pr
 <!-- TODO: Equation -->
 The weak duality theorem says that for the general problem, the optimal value of the Lagrange dual problem ( <!-- TODO: Equation $d^*$ -->) and the optimal value of the primal minimization problem ( <!-- TODO: Equation $p^*$ -->) are related by:
 <!-- TODO: Equation -->
+$$ d^* \le p^ $$
