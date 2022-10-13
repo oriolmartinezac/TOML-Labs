@@ -2,7 +2,7 @@
 
 All the projects developed in the **Topics on Optimization and Machine Learning** at 2022. 
 
-**Graded: 9.7**
+**Graded: 9.7 out of 10**.
 
 Each *README.md* file with the explanation about the work done in project can be found inside the respective *project-#* folder. You can also access them in the following links:
 
